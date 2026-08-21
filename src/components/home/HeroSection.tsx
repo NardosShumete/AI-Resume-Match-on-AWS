@@ -42,11 +42,11 @@ export const HeroSection: React.FC = () => {
           {/* Action CTAs */}
           <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 pt-2">
             <Link
-              to={isAuthenticated ? '/analyzer' : '/login'}
+              to="/analyzer"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-bold text-sm bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:shadow-indigo-500/30 hover:scale-[1.01] active:scale-[0.99] transition-all"
             >
               <Sparkles className="w-4 h-4" />
-              Analyze My Resume Free
+              Analyze My Resume
               <ArrowRight className="w-4 h-4" />
             </Link>
 
@@ -54,7 +54,7 @@ export const HeroSection: React.FC = () => {
               to="/dashboard"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl font-semibold text-sm bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-200 dark:hover:bg-zinc-800 text-foreground border border-zinc-200 dark:border-zinc-800 transition-all active:scale-[0.99]"
             >
-              Explore Sample Dashboard
+              View ATS Dashboard
             </Link>
           </div>
 

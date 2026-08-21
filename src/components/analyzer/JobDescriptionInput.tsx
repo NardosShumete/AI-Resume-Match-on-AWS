@@ -62,7 +62,7 @@ export const JobDescriptionInput: React.FC = () => {
       {/* Preset Quick-Fill Pills */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
         <span className="text-muted-foreground flex items-center gap-1 text-[11px] whitespace-nowrap">
-          <Sparkles className="w-3 h-3 text-indigo-500" /> Test presets:
+          <Sparkles className="w-3 h-3 text-indigo-500" /> Example roles:
         </span>
         {samplePresets.map((p) => (
           <button

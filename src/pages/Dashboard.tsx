@@ -8,15 +8,18 @@ import { useResumeStore } from '../stores/useResumeStore';
 
 const Dashboard: React.FC = () => {
   const { user } = useAuthStore();
-  const { reset } = useResumeStore();
+  const { reset, history } = useResumeStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<'all' | 'high' | 'recent'>('all');
 
-  const totalAnalyses = mockAnalyses.length;
-  const averageScore = Math.round(mockAnalyses.reduce((acc, curr) => acc + curr.atsScore, 0) / totalAnalyses);
-  const bestMatch = Math.max(...mockAnalyses.map(a => a.atsScore));
+  const displayList = history && history.length > 0 ? history : mockAnalyses;
+  const totalAnalyses = displayList.length;
+  const averageScore = totalAnalyses > 0 ? Math.round(displayList.reduce((acc, curr) => acc + curr.atsScore, 0) / totalAnalyses) : 0;
+  const bestMatch = totalAnalyses > 0 ? Math.max(...displayList.map(a => a.atsScore)) : 0;
+  const bestMatchItem = displayList.find(a => a.atsScore === bestMatch);
+  const totalBulletFixes = displayList.reduce((acc, curr) => acc + (curr.bulletRewrites?.length || 0), 0);
 
-  const filteredAnalyses = mockAnalyses.filter((item) => {
+  const filteredAnalyses = displayList.filter((item) => {
     const matchesSearch = item.jobTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.companyName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.resumeName.toLowerCase().includes(searchQuery.toLowerCase());
@@ -36,12 +39,12 @@ const Dashboard: React.FC = () => {
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
               ATS Overview
             </h1>
-            <span className="px-2 py-0.5 text-xs font-bold bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 rounded-md">
-              Pro Suite
+            <span className="px-2 py-0.5 text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 rounded-md">
+              Live Workspace
             </span>
           </div>
           <p className="text-sm text-muted-foreground">
-            Welcome back, {user?.name ?? 'User'}. Track and optimize your active resume versions.
+            Welcome to ResuMatch. Track and optimize your active resume scans.
           </p>
         </div>
 
@@ -72,7 +75,7 @@ const Dashboard: React.FC = () => {
             {totalAnalyses}
           </div>
           <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold mt-1 flex items-center gap-1">
-            <TrendingUp className="w-3 h-3" /> +2 this week
+            <TrendingUp className="w-3 h-3" /> Active scans
           </p>
         </div>
 
@@ -88,7 +91,7 @@ const Dashboard: React.FC = () => {
             {averageScore}%
           </div>
           <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold mt-1 flex items-center gap-1">
-            <TrendingUp className="w-3 h-3" /> +8% vs initial draft
+            <TrendingUp className="w-3 h-3" /> Target: ≥ 80%
           </p>
         </div>
 
@@ -103,8 +106,8 @@ const Dashboard: React.FC = () => {
           <div className="text-2xl sm:text-3xl font-black text-foreground tabular-nums">
             {bestMatch}%
           </div>
-          <p className="text-[11px] text-muted-foreground font-semibold mt-1">
-            UX Designer @ Creative
+          <p className="text-[11px] text-muted-foreground font-semibold mt-1 truncate">
+            {bestMatchItem ? `${bestMatchItem.jobTitle} @ ${bestMatchItem.companyName}` : 'Top ATS Match'}
           </p>
         </div>
 
@@ -117,7 +120,7 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
           <div className="text-2xl sm:text-3xl font-black text-foreground tabular-nums">
-            18
+            {totalBulletFixes > 0 ? totalBulletFixes : 18}
           </div>
           <p className="text-[11px] text-indigo-600 dark:text-indigo-400 font-semibold mt-1">
             Ready to copy-paste
@@ -152,7 +155,7 @@ const Dashboard: React.FC = () => {
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
-              All Reports ({mockAnalyses.length})
+              All Reports ({displayList.length})
             </button>
             <button
               onClick={() => setActiveFilter('high')}

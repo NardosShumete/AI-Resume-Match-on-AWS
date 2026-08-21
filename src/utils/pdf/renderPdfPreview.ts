@@ -18,7 +18,7 @@ export const renderPdfPreview = async (pdf: PDFDocumentProxy): Promise<string | 
     canvas.height = viewport.height;
     canvas.width = viewport.width;
     
-    const renderContext = {
+    const renderContext: any = {
       canvasContext: context,
       viewport: viewport,
     };

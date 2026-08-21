@@ -15,7 +15,8 @@ export function matchKeywords(resumeText: string, jobDescriptionText: string) {
     // In a real system, you'd analyze if the JD says "required" vs "bonus".
     // We'll just randomly assign or assign based on some rules.
     // Let's say: if it appears multiple times, it's high importance.
-    const countInJd = (jobDescriptionText.toLowerCase().match(new RegExp(jdKw.normalized.toLowerCase(), 'g')) || []).length;
+    const escaped = jdKw.normalized.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const countInJd = (jobDescriptionText.toLowerCase().match(new RegExp(escaped, 'g')) || []).length;
     let importance: 'high' | 'medium' | 'low' = 'medium';
     
     if (countInJd > 2) importance = 'high';

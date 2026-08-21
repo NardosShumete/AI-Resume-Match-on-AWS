@@ -110,10 +110,10 @@ ResuMatch/
 ## 🚀 Getting Started
 
 ### Prerequisites
-- **Node.js**: v18.0.0 or higher
+- **Node.js**: v20.0.0 or higher
 - **npm** or **pnpm** / **yarn**
 
-### Installation
+### Installation & Local Development
 
 1. **Clone the repository:**
    ```bash
@@ -121,37 +121,38 @@ ResuMatch/
    cd AI-Resume-Match-on-AWS
    ```
 
-2. **Install dependencies:**
+2. **Install dependencies (Frontend & Backend):**
    ```bash
    npm install
+   cd backend && npm install && cd ..
    ```
 
-3. **Start the local development server:**
+3. **Configure Environment Variables:**
+   In the project root `.env`:
+   ```env
+   GEMINI_API_KEY=your_gemini_api_key_here
+   VITE_API_URL=http://127.0.0.1:3001/analyze
+   ```
+
+4. **Run the Backend API Server:**
+   ```bash
+   npm run backend
+   ```
+   *Runs the local backend simulator on `http://127.0.0.1:3001/analyze` (or use `sam local start-api -p 3001` if AWS SAM CLI is installed).*
+
+5. **Run the Frontend Development Server:**
    ```bash
    npm run dev
    ```
    Open [http://localhost:5173](http://localhost:5173) in your browser.
 
-4. **Build for production:**
-   ```bash
-   npm run build
-   ```
-
-5. **Preview production build:**
-   ```bash
-   npm run preview
-   ```
-
 ---
 
-## 🔮 Roadmap (Phase 3 & Beyond)
+## 🔮 Roadmap
 
 - [x] **Phase 1: UI/UX & Architecture**: Modern SaaS frontend, responsive design, and mock data implementation.
 - [x] **Phase 2: Real PDF Parsing**: Client-side document parsing, text extraction, and preview rendering via `pdfjs-dist`.
-- [x] **Phase 3: ATS Analysis Engine & AI Integration**: Deterministic 0-100 ATS scoring pipeline (keyword, skills, formatting, impact matching) powered by local parsing, augmented by secure Vite-proxied Google Gemini AI recommendations.
-- [ ] **Phase 4: Cloud Backend**: Serverless AWS Lambda microservices + API Gateway.
+- [x] **Phase 3: ATS Analysis Engine & AI Integration**: Deterministic 0-100 ATS scoring pipeline (keyword, skills, formatting, impact matching).
+- [x] **Phase 4: Cloud Backend**: Serverless AWS Lambda microservice + API Gateway SAM architecture + local backend execution runner.
 - [ ] **Phase 5: Persistence**: User account & resume history storage via AWS DynamoDB.
 - [ ] **Phase 6: Export Options**: Export customized PDF resumes and ATS report summaries.
-
-
-

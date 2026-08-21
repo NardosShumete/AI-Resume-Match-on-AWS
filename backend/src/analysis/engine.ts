@@ -9,7 +9,7 @@ import { calculateFormattingScore } from './scoring/formattingScore';
 import { calculateImpactScore } from './scoring/impactScore';
 import { calculateAtsScore } from './scoring/calculateAtsScore';
 import { getScoreTier } from '../utils/scoreTier';
-import { generateAiFeedback } from './ai/geminiClient';
+import { generateAiFeedback } from '../services/gemini';
 import { v4 as uuidv4 } from 'uuid';
 
 export async function analyzeResume(resumeText: string, jobDescriptionText: string, resumeName: string, companyName: string, jobTitle: string): Promise<AnalysisResult> {

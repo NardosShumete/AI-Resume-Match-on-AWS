@@ -1,3 +1,5 @@
+import { GoogleGenAI } from '@google/genai';
+
 export interface GeminiFeedbackResponse {
   recommendations: Array<{
     issue: string;
@@ -23,6 +25,14 @@ export async function generateAiFeedback(
   atsScore: number,
   missingSkills: string[]
 ): Promise<GeminiFeedbackResponse> {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    console.error('GEMINI_API_KEY is not defined in environment variables');
+    throw new Error('GEMINI_API_KEY is missing');
+  }
+
+  const ai = new GoogleGenAI({ apiKey });
+
   const prompt = `
 You are an expert technical recruiter and ATS specialist.
 Analyze this resume against the job description and the calculated deterministic analysis.
@@ -55,25 +65,25 @@ Ensure valid JSON output without markdown blocks around it if possible.
 `;
 
   try {
-    const response = await fetch('/api/gemini', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ prompt })
+    const response = await ai.models.generateContent({
+      model: 'gemini-3.6-flash',
+      contents: prompt,
+      config: {
+        responseMimeType: 'application/json',
+      }
     });
 
-    if (!response.ok) {
-      throw new Error('Failed to fetch AI feedback');
+    const text = response.text;
+    if (!text) {
+        throw new Error('Empty response from Gemini');
     }
-
-    const text = await response.text();
+    
     // In case the model returned markdown code blocks around the JSON
     const cleanText = text.replace(/```json/gi, '').replace(/```/g, '').trim();
     
     return JSON.parse(cleanText) as GeminiFeedbackResponse;
   } catch (error) {
-    console.error('Gemini proxy error:', error);
+    console.error('Gemini API error:', error);
     // Return graceful fallback
     return {
       recommendations: [{

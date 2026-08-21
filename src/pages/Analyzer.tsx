@@ -17,6 +17,7 @@ const Analyzer: React.FC = () => {
     jobDescription,
     status,
     errorMessage,
+    loadExampleData,
     analyzeResume,
   } = useResumeStore();
 
@@ -54,23 +55,53 @@ const Analyzer: React.FC = () => {
           </p>
         </div>
 
-        {/* Readiness Pill Status */}
-        <div className="flex items-center gap-3 bg-zinc-100 dark:bg-zinc-900/90 px-3.5 py-2 rounded-xl border border-zinc-200 dark:border-zinc-800">
-          <div className="flex items-center gap-2">
-            {checklist.map((item, idx) => (
-              <div
-                key={idx}
-                className={`w-2.5 h-2.5 rounded-full transition-colors ${
-                  item.ready ? 'bg-emerald-500 shadow-xs shadow-emerald-500/50' : 'bg-zinc-300 dark:bg-zinc-700'
-                }`}
-                title={item.label}
-              />
-            ))}
+        {/* Header Right Actions & Readiness */}
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            type="button"
+            onClick={loadExampleData}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-indigo-50 to-violet-50 dark:from-indigo-950/60 dark:to-violet-950/60 hover:from-indigo-100 hover:to-violet-100 dark:hover:from-indigo-900/60 dark:hover:to-violet-900/60 text-indigo-600 dark:text-indigo-400 border border-indigo-200/80 dark:border-indigo-800/80 shadow-xs transition-all active:scale-[0.98]"
+            title="Populate an example resume and job description to test the ATS engine immediately"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
+            ✨ Load Example Data
+          </button>
+
+          {/* Readiness Pill Status */}
+          <div className="flex items-center gap-3 bg-zinc-100 dark:bg-zinc-900/90 px-3.5 py-2 rounded-xl border border-zinc-200 dark:border-zinc-800">
+            <div className="flex items-center gap-2">
+              {checklist.map((item, idx) => (
+                <div
+                  key={idx}
+                  className={`w-2.5 h-2.5 rounded-full transition-colors ${
+                    item.ready ? 'bg-emerald-500 shadow-xs shadow-emerald-500/50' : 'bg-zinc-300 dark:bg-zinc-700'
+                  }`}
+                  title={item.label}
+                />
+              ))}
+            </div>
+            <span className="text-xs font-semibold text-foreground">
+              {checklist.filter((i) => i.ready).length} / 3 Steps Ready
+            </span>
           </div>
-          <span className="text-xs font-semibold text-foreground">
-            {checklist.filter((i) => i.ready).length} / 3 Steps Ready
-          </span>
         </div>
+      </div>
+
+      {/* Informational Guidance Callout */}
+      <div className="rounded-2xl p-4 bg-indigo-500/5 dark:bg-indigo-500/10 border border-indigo-500/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+        <div className="flex items-start gap-2.5">
+          <Sparkles className="w-4 h-4 text-indigo-500 shrink-0 mt-0.5" />
+          <div className="text-muted-foreground leading-relaxed">
+            <span className="font-bold text-foreground">How it works:</span> Upload your PDF resume and paste target job requirements. The engine parses key competencies, evaluates your ATS score, and generates targeted AI bullet point rewrites.
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={loadExampleData}
+          className="shrink-0 font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1 cursor-pointer"
+        >
+          Load Example Data →
+        </button>
       </div>
 
       {/* Main Grid: Two columns */}

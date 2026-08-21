@@ -1,0 +1,33 @@
+{
+  "version": "2.0",
+  "routeKey": "POST /analyze",
+  "rawPath": "/analyze",
+  "rawQueryString": "",
+  "headers": {
+    "accept": "*/*",
+    "content-length": "426",
+    "content-type": "application/json",
+    "host": "localhost:3001",
+    "user-agent": "curl/7.79.1"
+  },
+  "requestContext": {
+    "accountId": "123456789012",
+    "apiId": "local-api-id",
+    "domainName": "localhost:3001",
+    "domainPrefix": "localhost",
+    "http": {
+      "method": "POST",
+      "path": "/analyze",
+      "protocol": "HTTP/1.1",
+      "sourceIp": "127.0.0.1",
+      "userAgent": "curl/7.79.1"
+    },
+    "requestId": "test-request-id",
+    "routeKey": "POST /analyze",
+    "stage": "$default",
+    "time": "21/Aug/2026:12:00:00 +0000",
+    "timeEpoch": 1787313600000
+  },
+  "body": "{\"resumeText\":\"John Doe\\nSoftware Engineer\\njohn@example.com\\n\\nSUMMARY\\nSenior Backend Engineer with AWS experience.\\n\\nEXPERIENCE\\nSoftware Engineer at TechCorp\\nJan 2020 - Present\\n- Built scalable microservices using Node.js and AWS Lambda.\\n\\nSKILLS\\nNode.js, AWS, TypeScript, Docker\",\"jobDescription\":\"Looking for a Senior Backend Engineer with Node.js and AWS experience.\",\"targetJobTitle\":\"Senior Backend Engineer\",\"targetCompany\":\"Startup Inc\"}",
+  "isBase64Encoded": false
+}

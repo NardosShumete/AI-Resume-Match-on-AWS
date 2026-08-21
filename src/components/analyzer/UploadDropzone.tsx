@@ -7,7 +7,7 @@ import { cn } from '../../lib/utils';
 export const UploadDropzone: React.FC = () => {
   const [dragActive, setDragActive] = useState(false);
   const [showExtractedText, setShowExtractedText] = useState(false);
-  const { resumeFile, resumeMetadata, pdfState, pdfError } = useResumeStore();
+  const { resumeFile, resumeMetadata, pdfState, pdfError, loadSampleData } = useResumeStore();
   const { parsePdf, reset } = usePdfParser();
 
   const handleDrag = useCallback((e: React.DragEvent) => {
@@ -36,30 +36,10 @@ export const UploadDropzone: React.FC = () => {
     parsePdf(file);
   };
 
-  const handleUseDemo = async (e: React.MouseEvent) => {
+  const handleUseDemo = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
-    // Create a mock PDF for demonstration. Note: since we're now doing real PDF extraction,
-    // this empty blob won't parse properly because it's not a real PDF structure.
-    // For Phase 2, we should ideally fetch a real sample PDF from public directory.
-    // However, if we don't have one, this will trigger the "empty text" error.
-    
-    try {
-      const response = await fetch('/sample-resume.pdf').catch(() => null);
-      if (response && response.ok) {
-        const blob = await response.blob();
-        const demoFile = new File([blob], 'Alex_Chen_Senior_Frontend_2026.pdf', {
-          type: 'application/pdf',
-          lastModified: Date.now(),
-        });
-        handleFile(demoFile);
-      } else {
-        alert("Sample PDF not found. Please upload a real PDF file from your computer.");
-      }
-    } catch (err) {
-       alert("Could not load sample PDF. Please upload a real PDF.");
-    }
+    loadSampleData();
   };
 
   const formatBytes = (bytes: number) => {
@@ -128,7 +108,7 @@ export const UploadDropzone: React.FC = () => {
             >
               <div className="flex items-center gap-2">
                 <Code className="w-3.5 h-3.5 text-indigo-500" />
-                <span className="text-[11px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">Developer Preview (Text)</span>
+                <span className="text-[11px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">Extracted Text View</span>
               </div>
               <span className="text-[10px] font-medium text-muted-foreground">{showExtractedText ? 'Hide' : 'Show'}</span>
             </button>
@@ -141,8 +121,8 @@ export const UploadDropzone: React.FC = () => {
                 </div>
               ) : (
                 <div className="absolute inset-0 flex items-center justify-center text-center p-4">
-                   <p className="text-xs text-muted-foreground max-w-[200px]">
-                     Verify text extraction logic before ATS processing begins.
+                   <p className="text-xs text-muted-foreground max-w-[220px]">
+                     Inspect the plain text extracted from your PDF used for ATS keyword matching.
                    </p>
                 </div>
               )}
@@ -217,19 +197,20 @@ export const UploadDropzone: React.FC = () => {
           or <span className="text-indigo-600 dark:text-indigo-400 font-semibold underline underline-offset-2">browse files</span> from your computer
         </p>
 
-        {/* Quick 1-click Demo Fill */}
+        {/* Quick 1-click Example Fill */}
         <button
           type="button"
           onClick={handleUseDemo}
-          className="relative z-20 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-100 dark:bg-zinc-800 text-foreground hover:bg-indigo-500 hover:text-white transition-all shadow-xs border border-zinc-200 dark:border-zinc-700"
+          className="relative z-20 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-100 dark:bg-zinc-800 text-foreground hover:bg-indigo-600 hover:text-white transition-all shadow-xs border border-zinc-200 dark:border-zinc-700"
+          title="Pre-fill with an example software engineering resume"
         >
           <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-          Test with Sample PDF
+          ✨ Load Example Resume
         </button>
 
         <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground mt-4">
           <AlertCircle className="w-3 h-3" />
-          PDF up to 20MB supported
+          Supports PDF format • 100% Client-side privacy
         </div>
       </div>
     </div>

@@ -1,0 +1,64 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  resumatch-backend
+  Backend for ResuMatch AI using AWS SAM
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 512
+    Runtime: nodejs22.x
+    Architectures:
+      - x86_64
+    Environment:
+      Variables:
+        GEMINI_API_KEY: !Ref GeminiApiKey
+
+Parameters:
+  GeminiApiKey:
+    Type: String
+    Description: Google Gemini API Key
+
+Resources:
+  AnalyzeResumeFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: analyze.handler
+      Events:
+        AnalyzeApi:
+          Type: HttpApi
+          Properties:
+            Path: /analyze
+            Method: POST
+            ApiId: !Ref ResuMatchHttpApi
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2022
+        Sourcemap: false
+        EntryPoints:
+          - src/handlers/analyze.ts
+
+  ResuMatchHttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      CorsConfiguration:
+        AllowOrigins:
+          - http://localhost:5173
+          - http://localhost:3000
+        AllowHeaders:
+          - Content-Type
+          - Authorization
+        AllowMethods:
+          - POST
+          - GET
+          - OPTIONS
+        AllowCredentials: false
+
+Outputs:
+  AnalyzeApi:
+    Description: "API Gateway endpoint URL for Prod stage for Analyze function"
+    Value: !Sub "https://${ResuMatchHttpApi}.execute-api.${AWS::Region}.amazonaws.com/analyze"

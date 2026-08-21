@@ -21,6 +21,8 @@ coverage/
 .env.production.local
 *.env
 *.env.*
+env.json
+.aws-sam/
 
 # Logs
 logs/

@@ -65,11 +65,11 @@ const Results: React.FC = () => {
           </button>
 
           <button
-            onClick={() => alert('Exporting detailed ATS report as PDF... (Feature ready in Phase 2)')}
+            onClick={() => window.print()}
             className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white shadow-md shadow-indigo-500/25 transition-all active:scale-[0.98]"
           >
             <Download className="w-3.5 h-3.5" />
-            Export Full Audit
+            Export Report (PDF)
           </button>
         </div>
       </div>

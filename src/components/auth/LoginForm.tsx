@@ -5,7 +5,7 @@ import { Mail, Lock, BarChart3, Sparkles, Eye, EyeOff, ArrowRight } from 'lucide
 import { Button } from '../ui/Button';
 
 export const LoginForm: React.FC = () => {
-  const [email, setEmail] = useState('demo@resumatch.ai');
+  const [email, setEmail] = useState('user@resumatch.ai');
   const [password, setPassword] = useState('password');
   const [showPassword, setShowPassword] = useState(false);
   const { login, isLoading } = useAuthStore();
@@ -124,11 +124,11 @@ export const LoginForm: React.FC = () => {
           </Button>
         </form>
 
-        {/* Demo hint */}
+        {/* Workspace notice */}
         <div className="mt-5 flex items-center gap-2 p-3 bg-indigo-50 dark:bg-indigo-500/10 rounded-xl border border-indigo-100 dark:border-indigo-500/20">
           <Sparkles className="w-4 h-4 text-indigo-500 flex-shrink-0" />
           <p className="text-xs text-indigo-700 dark:text-indigo-300">
-            Demo mode: credentials are pre-filled. Just click <strong>Sign In</strong>.
+            Instant Access: Enter your email or click <strong>Sign In</strong> to open your workspace.
           </p>
         </div>
       </div>

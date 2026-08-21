@@ -1,0 +1,22 @@
+{
+  "name": "resumatch-backend",
+  "version": "1.0.0",
+  "description": "Backend for ResuMatch AI",
+  "type": "module",
+  "scripts": {
+    "dev": "npm run build && node local-server.js",
+    "start": "node local-server.js",
+    "build": "esbuild src/handlers/analyze.ts --bundle --minify --sourcemap --platform=node --target=es2022 --format=esm --packages=external --outfile=dist/analyze.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@google/genai": "^2.18.0",
+    "uuid": "^11.0.3"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.145",
+    "@types/uuid": "^10.0.0",
+    "esbuild": "^0.24.0",
+    "typescript": "^5.6.3"
+  }
+}
