@@ -10,6 +10,8 @@ const Analyzer: React.FC = () => {
   const navigate = useNavigate();
   const {
     resumeFile,
+    resumeMetadata,
+    pdfState,
     companyName,
     jobTitle,
     jobDescription,
@@ -18,7 +20,7 @@ const Analyzer: React.FC = () => {
     analyzeResume,
   } = useResumeStore();
 
-  const isFormValid = Boolean(resumeFile && companyName.trim() && jobTitle.trim() && jobDescription.trim().length > 30);
+  const isFormValid = Boolean(pdfState === 'success' && resumeMetadata && companyName.trim() && jobTitle.trim() && jobDescription.trim().length > 30);
 
   useEffect(() => {
     if (status === 'completed') {
@@ -27,7 +29,7 @@ const Analyzer: React.FC = () => {
   }, [status, navigate]);
 
   const checklist = [
-    { label: 'Resume PDF uploaded', ready: Boolean(resumeFile) },
+    { label: 'Resume PDF parsed', ready: Boolean(pdfState === 'success' && resumeMetadata) },
     { label: 'Target company & role', ready: Boolean(companyName.trim() && jobTitle.trim()) },
     { label: 'Job description text', ready: Boolean(jobDescription.trim().length > 30) },
   ];

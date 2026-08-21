@@ -11,7 +11,7 @@ ResuMatch AI is a modern SaaS frontend application designed to emulate Applicant
 
 ---
 
-## ✨ Features Implemented (Phase 1 Frontend)
+## ✨ Features Implemented (Phases 1 & 2)
 
 ### 1. 🌟 Landing & Showcase Experience (`/`)
 - **Hero Section**: Value proposition with dynamic CTA buttons and instant navigation.
@@ -32,30 +32,22 @@ ResuMatch AI is a modern SaaS frontend application designed to emulate Applicant
 - **Interactive Resume Cards**: Visual score badges, targeted role details, matched skill tags, missing requirement flags, and 1-click report navigation.
 - **Quick Action Bar**: Direct button to start a new analysis.
 
-### 4. ⚡ ATS Engine & Analyzer (`/analyzer`)
-- **Interactive Resume Dropzone**: Drag-and-drop file upload with support for PDF files, real-time file size/name indicators, and instant mock demo resume loader.
-- **Target Role & Job Description**:
-  - Target Job Title & Target Company fields.
-  - Job Description textarea with live word count and smart recommendations.
-- **1-Click Test Role Presets**: Instant auto-fill buttons for:
-  - `Senior Frontend Engineer` (Stripe)
-  - `Product Manager` (Linear)
-  - `DevOps & Cloud Engineer` (AWS)
-- **Live Readiness Checklist**: Interactive checklist monitoring resume upload and job description requirements before triggering analysis.
-- **Simulated Scanning State**: Realistic AI scanning animation with progress feedback.
+### 4. ⚡ ATS Engine & Local PDF Parsing (`/analyzer`)
+- **Real Client-Side PDF Parsing (Phase 2)**: 100% local, secure, and instant PDF text extraction using `pdfjs-dist` inside Web Workers.
+- **Live PDF Metadata**: Calculates and displays real file size, word count, character count, and page count.
+- **Visual PDF Previews**: Generates a fast, high-quality thumbnail preview of the first page using HTML5 Canvas.
+- **Developer Preview Tool**: Built-in inspector to verify the raw extracted text before analysis.
+- **Target Role & Job Description**: Target Job Title & Target Company fields, and Job Description textarea with smart recommendations.
+- **Live Readiness Checklist**: Interactive checklist monitoring resume extraction and job description requirements before triggering analysis.
 
 ### 5. 📑 Detailed ATS Results View (`/results`)
 - **Radial ATS Score Gauge**: Interactive SVG circular score gauge with dynamic color tiering (Green 80%+, Yellow 60-79%, Red <60%).
-- **Score Dimension Breakdown**: Progress meters breaking down:
-  - Keyword & Skill Match
-  - Formatting & ATS Readability
-  - Experience Relevance
-  - Impact & Measurable Metrics
+- **Score Dimension Breakdown**: Progress meters breaking down Keyword & Skill Match, Formatting & ATS Readability, Experience Relevance, and Impact & Measurable Metrics.
 - **Weighted Keyword Analysis**:
   - **Matching Keywords**: High-priority matched skills in clean success badges.
   - **Missing Keywords**: Flagged gaps marked with importance tiers (*High Priority*, *Medium Priority*).
 - **AI Recommendation Accordions**:
-  - **Bullet Point Rewrites**: Before (weak action) vs. After (Google X-Y-Z formula: Accomplished [X], measured by [Y], by doing [Z]) with copy-to-clipboard functionality.
+  - **Bullet Point Rewrites**: Before (weak action) vs. After (Google X-Y-Z formula) with copy-to-clipboard functionality.
   - **Formatting & Layout Tips**: Actionable ATS structure suggestions.
   - **Skills Gap Action Plan**: Direct steps to bridge qualification differences.
 
@@ -74,6 +66,7 @@ ResuMatch AI is a modern SaaS frontend application designed to emulate Applicant
 | **Framework** | [React 19](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/) |
 | **Build Tool & Bundler** | [Vite 8](https://vitejs.dev/) |
 | **Styling & CSS** | [Tailwind CSS v4](https://tailwindcss.com/) + PostCSS |
+| **PDF Extraction** | [pdfjs-dist (v4)](https://mozilla.github.io/pdf.js/) |
 | **Routing** | [React Router v7](https://reactrouter.com/) |
 | **State Management** | [Zustand v5](https://github.com/pmndrs/zustand) |
 | **Icons** | [Lucide React](https://lucide.dev/) |
@@ -84,52 +77,23 @@ ResuMatch AI is a modern SaaS frontend application designed to emulate Applicant
 
 ```text
 ResuMatch/
-├── public/                     # Static assets (logo.png, favicons)
+├── public/                     # Static assets (logo.png, favicons, sample PDF)
 ├── src/
 │   ├── assets/                 # Project images & illustrations
 │   ├── components/
 │   │   ├── analyzer/           # Analyzer page components
-│   │   │   ├── JobDescriptionInput.tsx
-│   │   │   ├── JobInformationForm.tsx
-│   │   │   └── UploadDropzone.tsx
 │   │   ├── auth/               # Authentication guard & forms
-│   │   │   ├── AuthGuard.tsx
-│   │   │   └── LoginForm.tsx
 │   │   ├── home/               # Landing page sections
-│   │   │   ├── FeatureSection.tsx
-│   │   │   ├── HeroSection.tsx
-│   │   │   ├── HowItWorks.tsx
-│   │   │   ├── ProductPreview.tsx
-│   │   │   └── ResumeCard.tsx
 │   │   ├── layout/             # Header, Footer, PageContainer
-│   │   │   ├── Footer.tsx
-│   │   │   ├── Header.tsx
-│   │   │   └── PageContainer.tsx
 │   │   ├── results/            # Results view & scoring components
-│   │   │   ├── FeedbackAccordion.tsx
-│   │   │   ├── KeywordSection.tsx
-│   │   │   ├── ScoreBreakdown.tsx
-│   │   │   └── ScoreGauge.tsx
 │   │   └── ui/                 # Reusable UI primitives (Button, Badge, Card)
-│   │       ├── Badge.tsx
-│   │       ├── Button.tsx
-│   │       ├── Card.tsx
-│   │       ├── IconContainer.tsx
-│   │       └── SectionHeading.tsx
 │   ├── data/                   # Mock ATS data & test resumes
-│   │   └── mockAnalyses.ts
+│   ├── hooks/                  # Custom React hooks (usePdfParser)
 │   ├── lib/                    # Utility helpers (cn / tailwind-merge)
-│   │   └── utils.ts
 │   ├── pages/                  # Page route components
-│   │   ├── Analyzer.tsx
-│   │   ├── Dashboard.tsx
-│   │   ├── Home.tsx
-│   │   ├── Login.tsx
-│   │   ├── NotFound.tsx
-│   │   └── Results.tsx
 │   ├── stores/                 # Zustand state stores
-│   │   ├── useAuthStore.ts
-│   │   └── useResumeStore.ts
+│   ├── types/                  # TypeScript interfaces (PDF, Metadata)
+│   ├── utils/                  # Utility functions (PDF extraction & rendering)
 │   ├── App.tsx                 # Main application routes & layout wrapper
 │   ├── index.css               # Global styles, Tailwind CSS & color tokens
 │   └── main.tsx                # React DOM entry point
@@ -153,8 +117,8 @@ ResuMatch/
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/your-username/resumatch-ai.git
-   cd resumatch-ai
+   git clone https://github.com/NardosShumete/AI-Resume-Match-on-AWS.git
+   cd AI-Resume-Match-on-AWS
    ```
 
 2. **Install dependencies:**
@@ -180,14 +144,14 @@ ResuMatch/
 
 ---
 
-## 🔮 Roadmap (Phase 2 & Beyond)
+## 🔮 Roadmap (Phase 3 & Beyond)
 
-- [ ] **Real PDF Parsing**: Client-side / server-side document parsing via `pdfjs-dist`.
-- [ ] **AI Model Integration**: LLM analysis pipeline powered by Google Gemini 1.5 Flash / Pro API.
-- [ ] **Cloud Backend**: Serverless AWS Lambda microservices + API Gateway.
-- [ ] **Persistence**: User account & resume history storage via AWS DynamoDB.
-- [ ] **Export Options**: Export customized PDF resumes and ATS report summaries.
+- [x] **Phase 1: UI/UX & Architecture**: Modern SaaS frontend, responsive design, and mock data implementation.
+- [x] **Phase 2: Real PDF Parsing**: Client-side document parsing, text extraction, and preview rendering via `pdfjs-dist`.
+- [ ] **Phase 3: AI Model Integration**: LLM analysis pipeline powered by Google Gemini 1.5 Flash / Pro API.
+- [ ] **Phase 4: Cloud Backend**: Serverless AWS Lambda microservices + API Gateway.
+- [ ] **Phase 5: Persistence**: User account & resume history storage via AWS DynamoDB.
+- [ ] **Phase 6: Export Options**: Export customized PDF resumes and ATS report summaries.
 
----
 
 
