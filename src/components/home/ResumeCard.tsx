@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FileText, Calendar, ArrowRight, Building2, Check } from 'lucide-react';
-import type { AnalysisResult } from '../../data/mockAnalyses';
+import type { AnalysisResult } from '../../types/analysis';
 import { useResumeStore } from '../../stores/useResumeStore';
 
 interface ResumeCardProps {
@@ -13,10 +13,10 @@ export const ResumeCard: React.FC<ResumeCardProps> = ({ analysis }) => {
 
   const radius = 22;
   const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (analysis.score / 100) * circumference;
+  const offset = circumference - (analysis.atsScore / 100) * circumference;
 
-  const isExcellent = analysis.score >= 85;
-  const isGood = analysis.score >= 70;
+  const isExcellent = analysis.atsScore >= 85;
+  const isGood = analysis.atsScore >= 70;
 
   return (
     <div className="linear-card card-hover rounded-2xl p-5 flex flex-col justify-between group border border-zinc-200/80 dark:border-zinc-800">
@@ -53,7 +53,7 @@ export const ResumeCard: React.FC<ResumeCardProps> = ({ analysis }) => {
               />
             </svg>
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-xs font-bold tabular-nums text-foreground">{analysis.score}%</span>
+              <span className="text-xs font-bold tabular-nums text-foreground">{analysis.atsScore}%</span>
             </div>
           </div>
         </div>
@@ -67,21 +67,21 @@ export const ResumeCard: React.FC<ResumeCardProps> = ({ analysis }) => {
         {/* Keyword Tags */}
         <div className="space-y-1.5 mb-4">
           <div className="flex flex-wrap gap-1.5">
-            {analysis.keywords.matched.slice(0, 3).map((kw) => (
+            {analysis.matchedKeywords.slice(0, 3).map((kw) => (
               <span
-                key={kw}
+                key={kw.keyword}
                 className="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 flex items-center gap-1"
               >
                 <Check className="w-2.5 h-2.5 stroke-[3]" />
-                {kw}
+                {kw.keyword}
               </span>
             ))}
-            {analysis.keywords.missing.slice(0, 1).map((kw) => (
+            {analysis.missingKeywords.slice(0, 1).map((kw) => (
               <span
-                key={kw}
+                key={kw.keyword}
                 className="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20"
               >
-                +{kw}
+                +{kw.keyword}
               </span>
             ))}
           </div>

@@ -13,8 +13,8 @@ const Dashboard: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<'all' | 'high' | 'recent'>('all');
 
   const totalAnalyses = mockAnalyses.length;
-  const averageScore = Math.round(mockAnalyses.reduce((acc, curr) => acc + curr.score, 0) / totalAnalyses);
-  const bestMatch = Math.max(...mockAnalyses.map(a => a.score));
+  const averageScore = Math.round(mockAnalyses.reduce((acc, curr) => acc + curr.atsScore, 0) / totalAnalyses);
+  const bestMatch = Math.max(...mockAnalyses.map(a => a.atsScore));
 
   const filteredAnalyses = mockAnalyses.filter((item) => {
     const matchesSearch = item.jobTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -22,7 +22,7 @@ const Dashboard: React.FC = () => {
       item.resumeName.toLowerCase().includes(searchQuery.toLowerCase());
     
     if (!matchesSearch) return false;
-    if (activeFilter === 'high') return item.score >= 80;
+    if (activeFilter === 'high') return item.atsScore >= 80;
     return true;
   });
 

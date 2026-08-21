@@ -1,18 +1,18 @@
 import React from 'react';
 import { Layers } from 'lucide-react';
-import type { AnalysisResult } from '../../data/mockAnalyses';
+import type { ScoreBreakdown as BreakdownType } from '../../types/analysis';
 
 interface ScoreBreakdownProps {
-  categories: AnalysisResult['categories'];
+  categories: BreakdownType;
 }
 
 export const ScoreBreakdown: React.FC<ScoreBreakdownProps> = ({ categories }) => {
   const metrics = [
     { label: 'Keyword Density & Hard Skills', val: categories.keywordMatch, color: 'bg-emerald-500' },
     { label: 'Role & Tech Stack Alignment', val: categories.skillsMatch, color: 'bg-indigo-500' },
-    { label: 'Measurable Impact (X-Y-Z)', val: categories.experienceMatch, color: 'bg-cyan-500' },
+    { label: 'Measurable Impact (X-Y-Z)', val: categories.experienceRelevance, color: 'bg-cyan-500' },
     { label: 'ATS Heading & Hierarchy', val: categories.formatting, color: 'bg-violet-500' },
-    { label: 'Action Tone & Seniority Voice', val: categories.tone, color: 'bg-amber-500' },
+    { label: 'Action Tone & Seniority Voice', val: categories.impact, color: 'bg-amber-500' },
   ];
 
   return (

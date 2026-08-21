@@ -148,7 +148,7 @@ ResuMatch/
 
 - [x] **Phase 1: UI/UX & Architecture**: Modern SaaS frontend, responsive design, and mock data implementation.
 - [x] **Phase 2: Real PDF Parsing**: Client-side document parsing, text extraction, and preview rendering via `pdfjs-dist`.
-- [ ] **Phase 3: AI Model Integration**: LLM analysis pipeline powered by Google Gemini 1.5 Flash / Pro API.
+- [x] **Phase 3: ATS Analysis Engine & AI Integration**: Deterministic 0-100 ATS scoring pipeline (keyword, skills, formatting, impact matching) powered by local parsing, augmented by secure Vite-proxied Google Gemini AI recommendations.
 - [ ] **Phase 4: Cloud Backend**: Serverless AWS Lambda microservices + API Gateway.
 - [ ] **Phase 5: Persistence**: User account & resume history storage via AWS DynamoDB.
 - [ ] **Phase 6: Export Options**: Export customized PDF resumes and ATS report summaries.

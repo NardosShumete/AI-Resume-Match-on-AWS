@@ -1,9 +1,10 @@
 import React from 'react';
-import { Check, AlertCircle, Tag } from 'lucide-react';
+import { Check, AlertCircle, Tag, Flame } from 'lucide-react';
+import type { KeywordMatch, MissingKeyword } from '../../types/analysis';
 
 interface KeywordSectionProps {
-  matched: string[];
-  missing: string[];
+  matched: KeywordMatch[];
+  missing: MissingKeyword[];
 }
 
 export const KeywordSection: React.FC<KeywordSectionProps> = ({ matched, missing }) => {
@@ -34,11 +35,16 @@ export const KeywordSection: React.FC<KeywordSectionProps> = ({ matched, missing
         <div className="flex flex-wrap gap-1.5">
           {matched.map((kw) => (
             <span
-              key={kw}
-              className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 flex items-center gap-1"
+              key={kw.keyword}
+              className={`px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center gap-1 border ${
+                kw.importance === 'high' 
+                  ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20' 
+                  : 'bg-zinc-100 dark:bg-zinc-800 text-muted-foreground border-zinc-200 dark:border-zinc-700'
+              }`}
             >
               <Check className="w-3 h-3 stroke-[2.5]" />
-              {kw}
+              {kw.keyword}
+              {kw.importance === 'high' && <Flame className="w-3 h-3 ml-0.5 opacity-70" />}
             </span>
           ))}
         </div>
@@ -57,11 +63,16 @@ export const KeywordSection: React.FC<KeywordSectionProps> = ({ matched, missing
         <div className="flex flex-wrap gap-1.5">
           {missing.map((kw) => (
             <span
-              key={kw}
-              className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 flex items-center gap-1"
+              key={kw.keyword}
+              className={`px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center gap-1 border ${
+                kw.importance === 'high'
+                  ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20'
+                  : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
+              }`}
             >
               <AlertCircle className="w-3 h-3" />
-              {kw}
+              {kw.keyword}
+
             </span>
           ))}
         </div>

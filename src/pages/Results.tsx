@@ -79,17 +79,21 @@ const Results: React.FC = () => {
 
         {/* Left Column (5 cols): Gauge, Breakdown, Keywords */}
         <div className="lg:col-span-5 space-y-6">
-          <ScoreGauge score={analysisResults.score} />
-          <ScoreBreakdown categories={analysisResults.categories} />
+          <ScoreGauge score={analysisResults.atsScore} />
+          <ScoreBreakdown categories={analysisResults.scoreBreakdown} />
           <KeywordSection
-            matched={analysisResults.keywords.matched}
-            missing={analysisResults.keywords.missing}
+            matched={analysisResults.matchedKeywords}
+            missing={analysisResults.missingKeywords}
           />
         </div>
 
         {/* Right Column (7 cols): Feedback Accordions */}
         <div className="lg:col-span-7 space-y-6">
-          <FeedbackAccordion feedback={analysisResults.feedback} />
+          <FeedbackAccordion 
+            recommendations={analysisResults.recommendations}
+            bulletRewrites={analysisResults.bulletRewrites}
+            skillsGap={analysisResults.skillsGap}
+          />
         </div>
 
       </div>

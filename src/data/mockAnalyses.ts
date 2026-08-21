@@ -1,30 +1,4 @@
-export interface AnalysisResult {
-  id: string;
-  resumeName: string;
-  jobTitle: string;
-  companyName: string;
-  date: string;
-  score: number;
-  status: 'Excellent' | 'Strong' | 'Good' | 'Needs Work' | 'Critical';
-  categories: {
-    keywordMatch: number;
-    skillsMatch: number;
-    experienceMatch: number;
-    formatting: number;
-    tone: number;
-  };
-  keywords: {
-    matched: string[];
-    missing: string[];
-  };
-  feedback: {
-    id: string;
-    category: string;
-    issue: string;
-    whyItMatters: string;
-    recommendation: string;
-  }[];
-}
+import type { AnalysisResult } from '../types/analysis';
 
 export const mockAnalyses: AnalysisResult[] = [
   {
@@ -33,99 +7,69 @@ export const mockAnalyses: AnalysisResult[] = [
     jobTitle: 'Frontend Developer',
     companyName: 'JS Mastery',
     date: 'Oct 15, 2026',
-    score: 82,
+    atsScore: 82,
     status: 'Strong',
-    categories: {
+    scoreBreakdown: {
       keywordMatch: 85,
       skillsMatch: 78,
-      experienceMatch: 82,
+      experienceRelevance: 82,
       formatting: 90,
-      tone: 80,
+      impact: 80,
     },
-    keywords: {
-      matched: ['React', 'TypeScript', 'JavaScript', 'Next.js', 'Git', 'REST API'],
-      missing: ['Docker', 'AWS', 'Kubernetes', 'CI/CD'],
-    },
-    feedback: [
+    matchedKeywords: [
+      { keyword: 'React', importance: 'high' },
+      { keyword: 'TypeScript', importance: 'high' },
+      { keyword: 'JavaScript', importance: 'high' },
+      { keyword: 'Next.js', importance: 'medium' },
+      { keyword: 'Git', importance: 'medium' },
+      { keyword: 'REST API', importance: 'medium' }
+    ],
+    missingKeywords: [
+      { keyword: 'Docker', importance: 'medium' },
+      { keyword: 'AWS', importance: 'high' },
+      { keyword: 'Kubernetes', importance: 'low' },
+      { keyword: 'CI/CD', importance: 'medium' }
+    ],
+    matchedSkills: [
+      { skill: 'React', importance: 'high' },
+      { skill: 'TypeScript', importance: 'high' }
+    ],
+    missingSkills: [
+      { skill: 'AWS', importance: 'high' }
+    ],
+    summary: 'This resume is a strong match for the Frontend Developer role, demonstrating solid experience in React and TypeScript. However, it lacks cloud and containerization experience which are emphasized in the job description.',
+    recommendations: [
       {
-        id: 'f1',
-        category: 'Experience Improvements',
+        section: 'Experience',
+        priority: 'high',
         issue: 'Several experience bullets describe responsibilities rather than measurable results.',
-        whyItMatters: 'ATS systems and recruiters benefit from specific achievements and measurable impact.',
-        recommendation: 'Rewrite bullets using action + task + measurable result (e.g., "Improved load time by 20% by lazy loading images").',
+        recommendation: 'Rewrite bullets using action + task + measurable result.'
       },
       {
-        id: 'f2',
-        category: 'Formatting & Tone',
+        section: 'Formatting',
+        priority: 'medium',
         issue: 'Inconsistent date formats (e.g., "10/2021" vs "Oct 2021").',
-        whyItMatters: 'ATS parsers might fail to accurately calculate your total years of experience.',
-        recommendation: 'Standardize all dates to "Month YYYY" format.',
-      },
-      {
-        id: 'f3',
-        category: 'Skills Gap Analysis',
-        issue: 'Missing cloud deployment skills (AWS, Docker).',
-        whyItMatters: 'The job description heavily emphasizes managing your own deployments.',
-        recommendation: 'Add any relevant side projects where you used Docker or deployed to AWS/Vercel.',
+        recommendation: 'Standardize all dates to "Month YYYY" format.'
       }
-    ]
-  },
-  {
-    id: '2',
-    resumeName: 'Product Manager.pdf',
-    jobTitle: 'Product Manager',
-    companyName: 'TechFlow',
-    date: 'Oct 10, 2026',
-    score: 65,
-    status: 'Good',
-    categories: {
-      keywordMatch: 60,
-      skillsMatch: 70,
-      experienceMatch: 65,
-      formatting: 85,
-      tone: 85,
-    },
-    keywords: {
-      matched: ['Agile', 'Scrum', 'Jira', 'Roadmapping', 'User Stories'],
-      missing: ['Data Analytics', 'SQL', 'A/B Testing', 'Stakeholder Management'],
-    },
-    feedback: [
+    ],
+    bulletRewrites: [
       {
-        id: 'f4',
-        category: 'Keyword Recommendations',
-        issue: 'Missing key data-oriented keywords.',
-        whyItMatters: 'Modern PM roles require strong data-driven decision making evidence.',
-        recommendation: 'Include terms like "A/B Testing", "SQL", and "Data Analytics" in your core skills or experience context.',
+        original: 'Worked on improving page load time.',
+        improved: 'Improved page load time by 20% through implementation of lazy loading and code splitting.',
+        reason: 'Adds measurable impact (20%) and specific technical methods (lazy loading, code splitting).'
       }
-    ]
-  },
-  {
-    id: '3',
-    resumeName: 'UX_Designer_Final.pdf',
-    jobTitle: 'Senior UX Designer',
-    companyName: 'Creative Solutions',
-    date: 'Sep 28, 2026',
-    score: 91,
-    status: 'Excellent',
-    categories: {
-      keywordMatch: 95,
-      skillsMatch: 88,
-      experienceMatch: 92,
-      formatting: 98,
-      tone: 90,
-    },
-    keywords: {
-      matched: ['Figma', 'Prototyping', 'User Research', 'Wireframing', 'UI Design', 'Design Systems'],
-      missing: ['Framer', 'Motion Design'],
-    },
-    feedback: [
+    ],
+    skillsGap: [
       {
-        id: 'f5',
-        category: 'Resume Strengths',
-        issue: 'Excellent use of quantifiable metrics in case studies.',
-        whyItMatters: 'Designers who can prove business impact are highly sought after.',
-        recommendation: 'Ensure your portfolio link is prominent, as recruiters will definitely click it based on this resume.',
+        skill: 'AWS & Docker',
+        importance: 'high',
+        recommendation: 'Consider adding a personal project that uses Docker and deploys to AWS.'
       }
+    ],
+    formattingTips: [
+      'Standardize all dates to "Month YYYY" format.',
+      'Ensure standard section headers are used (e.g., "Experience" instead of "Places I worked").'
     ]
   }
 ];
+

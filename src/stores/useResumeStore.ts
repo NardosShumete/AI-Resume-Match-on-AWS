@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { mockAnalyses } from '../data/mockAnalyses';
-import type { AnalysisResult } from '../data/mockAnalyses';
+import type { AnalysisResult } from '../types/analysis';
 import type { PdfMetadata, PdfParserState } from '../types/pdf';
 
 interface ResumeState {
@@ -60,23 +60,25 @@ export const useResumeStore = create<ResumeState>((set, get) => ({
 
     set({ status: 'processing', errorMessage: null });
     
-    // Simulate network analysis
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    
-    // Pick the first mock as a dynamic response for new analyses
-    const result = {
-      ...mockAnalyses[0],
-      id: Date.now().toString(),
-      companyName,
-      jobTitle,
-      resumeName: resumeMetadata.fileName,
-      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-    };
+    try {
+      const { analyzeResume: runAnalysis } = await import('../analysis/engine');
+      
+      const result = await runAnalysis(
+        resumeMetadata.extractedText,
+        jobDescription,
+        resumeMetadata.fileName,
+        companyName,
+        jobTitle
+      );
 
-    set({
-      status: 'completed',
-      analysisResults: result
-    });
+      set({
+        status: 'completed',
+        analysisResults: result
+      });
+    } catch (error) {
+      console.error('Analysis failed:', error);
+      set({ status: 'error', errorMessage: 'Analysis failed to complete. Please try again.' });
+    }
   },
 
   setCurrentAnalysis: (id: string) => {
