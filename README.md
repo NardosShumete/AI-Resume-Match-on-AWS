@@ -1,61 +1,64 @@
 # ResuMatch AI 🎯
 
-> **Smart feedback for your dream job.**  
-> Analyze your resume directly against real-world job descriptions, calculate ATS compatibility scores, pinpoint missing keywords, and get tailored AI-driven bullet point improvements.
+> **AI-Powered Resume Analysis & AWS Serverless ATS Engine**  
+> Analyze resumes against real-world job descriptions, calculate deterministic 0–100 ATS compatibility scores across 5 key dimensions, identify missing keywords, and generate tailored AI bullet point rewrites using Google Gemini 3.6 Flash on AWS Serverless.
 
 ---
 
-## 📸 Overview & Product Screenshots
+## 📸 Overview
 
-ResuMatch AI is a modern SaaS frontend application designed to emulate Applicant Tracking System (ATS) parsing and provide job seekers with actionable insights to maximize interview callbacks.
+ResuMatch AI is a full-stack open-source SaaS web application designed to emulate Applicant Tracking System (ATS) parsing algorithms (Greenhouse, Lever, Workday, Taleo). It provides job seekers with instant, actionable insights and Google X-Y-Z formula bullet point rewrites to maximize interview callbacks.
 
 ---
 
-## ✨ Features Implemented (Phases 1 & 2)
+## 🚀 Key Features & Architectural Phases
 
-### 1. 🌟 Landing & Showcase Experience (`/`)
-- **Hero Section**: Value proposition with dynamic CTA buttons and instant navigation.
-- **Interactive Product Preview**: Live interactive preview card displaying resume analysis scores, keyword tag heatmaps, and Google X-Y-Z formula bullet rewrite comparisons.
-- **Engine Capabilities (Bento Grid)**: Visual showcase of ATS Parser Emulation, Weighted Keyword Heatmap, Action & Metric Bullet Re-writer, and Role Fit & Skills Gap Analysis.
-- **3-Step Workflow**: Clear walkthrough showing how users upload resumes, attach job descriptions, and unlock detailed ATS reports.
+### 🌟 Phase 1: Modern SaaS Interface & Open Guest Access
+- **Frictionless Access**: Unrestricted guest access across all routes (`/`, `/analyzer`, `/dashboard`, `/results`). No forced sign-in required.
+- **✨ One-Click Example Loader**: Instantly test the real ATS engine with pre-populated software engineer candidate specs (`example-fullstack-resume.pdf`) and Stripe job requirements.
+- **Dark & Light Mode**: Seamless theme switching with local storage persistence and system preference detection.
 
-### 2. 🔐 Authentication & Demo Access (`/login`)
-- **Mock Authentication Flow**: Complete sign-in / sign-out interface with validation feedback.
-- **One-Click Demo Personas**:
-  - `Alex Rivera` (Senior Software Engineer)
-  - `Sarah Chen` (Product Lead / Recruiter)
-- **Protected Routing**: `AuthGuard` component safeguarding Dashboard, Analyzer, and Results views.
+### 📄 Phase 2: Client-Side PDF Parsing Engine
+- **100% Client-Side Privacy**: Fast PDF text extraction using `pdfjs-dist` inside Web Workers without uploading unencrypted documents to third parties.
+- **Document Metadata & Canvas Preview**: Calculates real-time word counts, character counts, page counts, and renders a first-page PDF thumbnail preview.
+- **Extracted Text Inspector**: Built-in plain text inspector to inspect raw extracted document text prior to ATS analysis.
 
-### 3. 📊 Analytics Dashboard (`/dashboard`)
-- **Metrics Overview Bar**: High-density metric cards tracking Total Resumes Analyzed, Average ATS Score, Keyword Match Rate, and Top Match Count.
-- **Search & Filter Command Bar**: Instant real-time search by job title, company, or file name, plus score filter tabs (*All Reports* vs. *Top Matches ≥ 80%*).
-- **Interactive Resume Cards**: Visual score badges, targeted role details, matched skill tags, missing requirement flags, and 1-click report navigation.
-- **Quick Action Bar**: Direct button to start a new analysis.
+### 🎯 Phase 3: Deterministic ATS Engine & Gemini AI Integration
+- **5-Dimension Scoring Engine**:
+  1. **Keyword Density & Hard Skills** (Weighted term matching)
+  2. **Role & Tech Stack Alignment** (Job description relevance)
+  3. **Measurable Impact** (Google X-Y-Z formula & metric density)
+  4. **Formatting & ATS Readability** (Heading hierarchy & special character safety)
+  5. **Action Tone & Seniority Voice** (Action verb frequency)
+- **AI Recommendation Pipeline**: Powered by Google Gemini 3.6 Flash (`@google/genai`) to generate structured bullet point rewrites and skills gap action plans.
 
-### 4. ⚡ ATS Engine & Local PDF Parsing (`/analyzer`)
-- **Real Client-Side PDF Parsing (Phase 2)**: 100% local, secure, and instant PDF text extraction using `pdfjs-dist` inside Web Workers.
-- **Live PDF Metadata**: Calculates and displays real file size, word count, character count, and page count.
-- **Visual PDF Previews**: Generates a fast, high-quality thumbnail preview of the first page using HTML5 Canvas.
-- **Developer Preview Tool**: Built-in inspector to verify the raw extracted text before analysis.
-- **Target Role & Job Description**: Target Job Title & Target Company fields, and Job Description textarea with smart recommendations.
-- **Live Readiness Checklist**: Interactive checklist monitoring resume extraction and job description requirements before triggering analysis.
+### ☁️ Phase 4: AWS Serverless Backend & SAM Infrastructure
+- **Serverless Architecture**: 
+  ```text
+  React Frontend  ──>  API Gateway  ──>  AWS Lambda  ──>  ATS Engine  ──>  Gemini 3.6 Flash
+  ```
+- **AWS SAM CLI Template**: `backend/template.yaml` defining `AnalyzeResumeFunction` (`nodejs22.x`, 512MB, CORS configured).
+- **Strict Security Policy**: `GEMINI_API_KEY` is server-side ONLY. It is never exposed in frontend code, Vite client environment variables, or browser bundles.
 
-### 5. 📑 Detailed ATS Results View (`/results`)
-- **Radial ATS Score Gauge**: Interactive SVG circular score gauge with dynamic color tiering (Green 80%+, Yellow 60-79%, Red <60%).
-- **Score Dimension Breakdown**: Progress meters breaking down Keyword & Skill Match, Formatting & ATS Readability, Experience Relevance, and Impact & Measurable Metrics.
-- **Weighted Keyword Analysis**:
-  - **Matching Keywords**: High-priority matched skills in clean success badges.
-  - **Missing Keywords**: Flagged gaps marked with importance tiers (*High Priority*, *Medium Priority*).
-- **AI Recommendation Accordions**:
-  - **Bullet Point Rewrites**: Before (weak action) vs. After (Google X-Y-Z formula) with copy-to-clipboard functionality.
-  - **Formatting & Layout Tips**: Actionable ATS structure suggestions.
-  - **Skills Gap Action Plan**: Direct steps to bridge qualification differences.
+---
 
-### 6. 🎨 Design System & Theme Engine
-- **Dark & Light Mode**: Seamless theme switching with system preference detection and local persistence.
-- **Typography**: Paired modern fonts (*Plus Jakarta Sans* for UI, *JetBrains Mono* for code/metrics).
-- **Tailwind CSS v4 & PostCSS**: Zero external heavyweight UI dependencies; sleek, clean, minimalist SaaS aesthetic.
-- **Responsive Layout**: Mobile drawer navigation and responsive grid system across all breakpoints.
+## 🧪 Comprehensive Unit & Contract Testing Suite
+
+The repository includes a complete Vitest testing suite containing **38 unit & contract tests across 7 test files**:
+
+```bash
+npm test
+```
+
+| Test Suite | File Path | Coverage |
+| :--- | :--- | :--- |
+| **ATS Scoring Engine** | [`tests/atsEngine.test.ts`](file:///c:/Users/hp/Desktop/Portfolio/ResuMatch/tests/atsEngine.test.ts) | Score stability, regex escaping (`C++`/`.NET`), empty/large input safety |
+| **Gemini AI Service** | [`tests/geminiService.test.ts`](file:///c:/Users/hp/Desktop/Portfolio/ResuMatch/tests/geminiService.test.ts) | Mocked AI feedback generation, API error handling, missing key check |
+| **API Service Contract** | [`tests/apiService.test.ts`](file:///c:/Users/hp/Desktop/Portfolio/ResuMatch/tests/apiService.test.ts) | `src/services/api.ts` HTTP status handling (200, 400, 500, network error) |
+| **AWS Lambda Handler** | [`backend/tests/lambdaHandler.test.ts`](file:///c:/Users/hp/Desktop/Portfolio/ResuMatch/backend/tests/lambdaHandler.test.ts) | `APIGatewayProxyEventV2` payload limits (>50k chars), CORS headers, error trapping |
+| **Auth & Guest Access** | [`tests/authAndGuest.test.ts`](file:///c:/Users/hp/Desktop/Portfolio/ResuMatch/tests/authAndGuest.test.ts) | Unrestricted routing & guest user state |
+| **Store & LocalStorage** | [`tests/storeAndHistory.test.ts`](file:///c:/Users/hp/Desktop/Portfolio/ResuMatch/tests/storeAndHistory.test.ts) | Zustand store resets, `resumatch_guest_history` persistence & corruption recovery |
+| **PDF & Security Audit** | [`tests/pdfAndSecurity.test.ts`](file:///c:/Users/hp/Desktop/Portfolio/ResuMatch/tests/pdfAndSecurity.test.ts) | PDF text normalization, word count, client bundle security validation |
 
 ---
 
@@ -63,13 +66,15 @@ ResuMatch AI is a modern SaaS frontend application designed to emulate Applicant
 
 | Layer | Technology |
 | :--- | :--- |
-| **Framework** | [React 19](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/) |
+| **Frontend Framework** | [React 19](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/) |
 | **Build Tool & Bundler** | [Vite 8](https://vitejs.dev/) |
-| **Styling & CSS** | [Tailwind CSS v4](https://tailwindcss.com/) + PostCSS |
-| **PDF Extraction** | [pdfjs-dist (v4)](https://mozilla.github.io/pdf.js/) |
-| **Routing** | [React Router v7](https://reactrouter.com/) |
-| **State Management** | [Zustand v5](https://github.com/pmndrs/zustand) |
-| **Icons** | [Lucide React](https://lucide.dev/) |
+| **Styling** | [Tailwind CSS v4](https://tailwindcss.com/) + Vanilla CSS design system |
+| **Client-Side PDF Parsing**| [pdfjs-dist](https://mozilla.github.io/pdf.js/) (Web Worker text extraction) |
+| **State & Storage** | [Zustand v5](https://github.com/pmndrs/zustand) + `localStorage` history |
+| **Cloud Backend** | [AWS Lambda](https://aws.amazon.com/lambda/) (`nodejs22.x`) + [AWS API Gateway](https://aws.amazon.com/api-gateway/) |
+| **Infrastructure as Code**| [AWS SAM CLI](https://aws.amazon.com/serverless/sam/) (`template.yaml` + esbuild) |
+| **AI Integration** | [Google Gemini 3.6 Flash](https://ai.google.dev/) (`@google/genai`) |
+| **Test Runner** | [Vitest](https://vitest.dev/) |
 
 ---
 
@@ -77,82 +82,126 @@ ResuMatch AI is a modern SaaS frontend application designed to emulate Applicant
 
 ```text
 ResuMatch/
-├── public/                     # Static assets (logo.png, favicons, sample PDF)
-├── src/
-│   ├── assets/                 # Project images & illustrations
-│   ├── components/
-│   │   ├── analyzer/           # Analyzer page components
-│   │   ├── auth/               # Authentication guard & forms
-│   │   ├── home/               # Landing page sections
-│   │   ├── layout/             # Header, Footer, PageContainer
-│   │   ├── results/            # Results view & scoring components
-│   │   └── ui/                 # Reusable UI primitives (Button, Badge, Card)
-│   ├── data/                   # Mock ATS data & test resumes
+├── backend/                    # AWS Serverless Lambda Microservice
+│   ├── env.json                # Local SAM environment variables (Git-ignored)
+│   ├── local-server.js         # Lightweight local Node.js HTTP dev server
+│   ├── package.json            # Backend dependencies (@google/genai, esbuild)
+│   ├── template.yaml           # AWS SAM Infrastructure template
+│   └── src/
+│       ├── analysis/           # Relocated ATS engine & parsers
+│       ├── handlers/           # AWS Lambda API Gateway event handlers
+│       ├── services/           # Server-side Gemini AI integration
+│       ├── types/              # Self-contained backend TypeScript types
+│       └── utils/              # Score tiering & helper functions
+├── public/                     # Static assets & sample resume PDF
+├── src/                        # React 19 Frontend Application
+│   ├── components/             # UI components (analyzer, auth, home, layout, results)
+│   ├── data/                   # Initial sample scans & presets
 │   ├── hooks/                  # Custom React hooks (usePdfParser)
-│   ├── lib/                    # Utility helpers (cn / tailwind-merge)
-│   ├── pages/                  # Page route components
-│   ├── stores/                 # Zustand state stores
-│   ├── types/                  # TypeScript interfaces (PDF, Metadata)
-│   ├── utils/                  # Utility functions (PDF extraction & rendering)
-│   ├── App.tsx                 # Main application routes & layout wrapper
-│   ├── index.css               # Global styles, Tailwind CSS & color tokens
-│   └── main.tsx                # React DOM entry point
-├── .gitignore                  # Git ignore rules for Vite, Node & Env files
-├── index.html                  # HTML entry point with metadata
-├── package.json                # Dependencies and scripts
-├── tailwind.config.js          # Tailwind theme definitions
-├── tsconfig.json               # TypeScript configuration
-└── vite.config.ts              # Vite configuration
+│   ├── pages/                  # Page view routes (Analyzer, Dashboard, Results)
+│   ├── services/               # Client API gateway wrapper (src/services/api.ts)
+│   ├── stores/                 # Zustand state management
+│   ├── types/                  # Shared TypeScript definitions
+│   └── utils/                  # Client PDF rendering & helper utilities
+├── tests/                      # Frontend & API Contract Unit Tests
+├── .env                        # Local environment configuration
+├── package.json                # Root dependencies & test scripts
+└── vitest.config.ts            # Vitest test runner configuration
 ```
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Quickstart & Setup Guide
 
-### Prerequisites
-- **Node.js**: v20.0.0 or higher
-- **npm** or **pnpm** / **yarn**
+### 1. Prerequisites
+- **Node.js**: `v20.0.0` or higher (`v22.14.0` recommended)
+- **npm**: `v10.0.0` or higher
+- **Docker Desktop** (Optional, required for SAM local container execution)
 
-### Installation & Local Development
+### 2. Installation
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/NardosShumete/AI-Resume-Match-on-AWS.git
-   cd AI-Resume-Match-on-AWS
-   ```
+```bash
+# Clone the repository
+git clone https://github.com/NardosShumete/AI-Resume-Match-on-AWS.git
+cd AI-Resume-Match-on-AWS
 
-2. **Install dependencies (Frontend & Backend):**
-   ```bash
-   npm install
-   cd backend && npm install && cd ..
-   ```
+# Install frontend dependencies
+npm install
 
-3. **Configure Environment Variables:**
-   In the project root `.env`:
-   ```env
-   GEMINI_API_KEY=your_gemini_api_key_here
-   VITE_API_URL=http://127.0.0.1:3001/analyze
-   ```
+# Install backend dependencies
+cd backend && npm install && cd ..
+```
 
-4. **Run the Backend API Server:**
-   ```bash
-   npm run backend
-   ```
-   *Runs the local backend simulator on `http://127.0.0.1:3001/analyze` (or use `sam local start-api -p 3001` if AWS SAM CLI is installed).*
+### 3. Environment Configuration
 
-5. **Run the Frontend Development Server:**
-   ```bash
-   npm run dev
-   ```
-   Open [http://localhost:5173](http://localhost:5173) in your browser.
+Create a `.env` file in the root directory:
+```env
+GEMINI_API_KEY=your_google_gemini_api_key_here
+VITE_API_URL=http://127.0.0.1:3001/analyze
+```
+
+Create a local `backend/env.json` for SAM local execution:
+```json
+{
+  "AnalyzeResumeFunction": {
+    "GEMINI_API_KEY": "your_google_gemini_api_key_here"
+  }
+}
+```
+
+### 4. Running the Development Servers
+
+Option A — **Lightweight Local Server** (No Docker required):
+```bash
+# Terminal 1: Start Backend API Server on http://127.0.0.1:3001
+npm run backend
+
+# Terminal 2: Start React Frontend on http://localhost:5173
+npm run dev
+```
+
+Option B — **AWS SAM CLI with Docker**:
+```bash
+# Build Lambda function with SAM
+sam build -t backend/template.yaml --region us-east-1
+
+# Start Local API Gateway Docker Emulator on http://127.0.0.1:3001
+sam local start-api -t .aws-sam/build/template.yaml -n backend/env.json -p 3001 --region us-east-1 --skip-pull-image
+
+# Start React Frontend
+npm run dev
+```
 
 ---
 
-## 🔮 Roadmap
+## ⚡ Running Tests & Builds
 
-- [x] **Phase 1: UI/UX & Architecture**: Modern SaaS frontend, responsive design, and mock data implementation.
-- [x] **Phase 2: Real PDF Parsing**: Client-side document parsing, text extraction, and preview rendering via `pdfjs-dist`.
-- [x] **Phase 3: ATS Analysis Engine & AI Integration**: Deterministic 0-100 ATS scoring pipeline (keyword, skills, formatting, impact matching).
-- [x] **Phase 4: Cloud Backend**: Serverless AWS Lambda microservice + API Gateway SAM architecture + local backend execution runner.
-- [ ] **Phase 5: Persistence**: User account & resume history storage via AWS DynamoDB.
-- [ ] **Phase 6: Export Options**: Export customized PDF resumes and ATS report summaries.
+```bash
+# Run unit & contract test suite (38 tests)
+npm test
+
+# Build frontend production bundle
+npm run build
+
+# Build backend Lambda artifact
+cd backend && npm run build
+```
+
+---
+
+## 🔒 Security Policy
+
+1. `GEMINI_API_KEY` is restricted strictly to backend Lambda environment execution.
+2. No API keys are prefixed with `VITE_` or exposed in client bundles.
+3. Automated unit test `tests/pdfAndSecurity.test.ts` continuously verifies that zero secrets leak to the frontend.
+
+---
+
+## 🔮 Project Roadmap
+
+- [x] **Phase 1: Modern React UI & Guest Access**: Modern SaaS design system, dark mode, open guest access, and instant sample loader.
+- [x] **Phase 2: Client-Side PDF Parsing**: Secure client-side text extraction & thumbnail generation via `pdfjs-dist`.
+- [x] **Phase 3: Real ATS Engine & Gemini Integration**: 5-dimension deterministic scoring + Gemini 3.6 Flash structured rewrites.
+- [x] **Phase 4: AWS Serverless Backend & SAM Local Validation**: AWS Lambda microservice, API Gateway template, local Node runner, and Docker SAM Local E2E verification.
+- [ ] **Phase 5: Cloud Persistence**: AWS DynamoDB integration for user scan history storage.
+- [ ] **Phase 6: Tailored PDF Export**: Export tailored PDF resumes and comprehensive ATS report summaries.
