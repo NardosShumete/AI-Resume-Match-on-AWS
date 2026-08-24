@@ -1,25 +1,21 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuthStore } from '../stores/useAuthStore';
-import { Plus, Target, Trophy, TrendingUp, Sparkles, Search, Layers } from 'lucide-react';
-import { mockAnalyses } from '../data/mockAnalyses';
+import { Plus, Target, Trophy, TrendingUp, Sparkles, Search, Layers, Trash2, ArrowRight } from 'lucide-react';
 import { ResumeCard } from '../components/home/ResumeCard';
 import { useResumeStore } from '../stores/useResumeStore';
 
 const Dashboard: React.FC = () => {
-  const { user } = useAuthStore();
-  const { reset, history } = useResumeStore();
+  const { reset, history, clearHistory, loadSampleHistory } = useResumeStore();
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeFilter, setActiveFilter] = useState<'all' | 'high' | 'recent'>('all');
+  const [activeFilter, setActiveFilter] = useState<'all' | 'high'>('all');
 
-  const displayList = history && history.length > 0 ? history : mockAnalyses;
-  const totalAnalyses = displayList.length;
-  const averageScore = totalAnalyses > 0 ? Math.round(displayList.reduce((acc, curr) => acc + curr.atsScore, 0) / totalAnalyses) : 0;
-  const bestMatch = totalAnalyses > 0 ? Math.max(...displayList.map(a => a.atsScore)) : 0;
-  const bestMatchItem = displayList.find(a => a.atsScore === bestMatch);
-  const totalBulletFixes = displayList.reduce((acc, curr) => acc + (curr.bulletRewrites?.length || 0), 0);
+  const totalAnalyses = history.length;
+  const averageScore = totalAnalyses > 0 ? Math.round(history.reduce((acc, curr) => acc + curr.atsScore, 0) / totalAnalyses) : 0;
+  const bestMatch = totalAnalyses > 0 ? Math.max(...history.map(a => a.atsScore)) : 0;
+  const bestMatchItem = history.find(a => a.atsScore === bestMatch);
+  const totalBulletFixes = history.reduce((acc, curr) => acc + (curr.bulletRewrites?.length || 0), 0);
 
-  const filteredAnalyses = displayList.filter((item) => {
+  const filteredAnalyses = history.filter((item) => {
     const matchesSearch = item.jobTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.companyName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.resumeName.toLowerCase().includes(searchQuery.toLowerCase());
@@ -49,6 +45,18 @@ const Dashboard: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-3">
+          {history.length > 0 && (
+            <button
+              type="button"
+              onClick={clearHistory}
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-500/10 hover:bg-rose-100 dark:hover:bg-rose-500/20 transition-all border border-rose-200 dark:border-rose-500/20"
+              title="Clear all saved scan history"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+              Clear Scans
+            </button>
+          )}
+
           <Link
             to="/analyzer"
             onClick={reset}
@@ -107,7 +115,7 @@ const Dashboard: React.FC = () => {
             {bestMatch}%
           </div>
           <p className="text-[11px] text-muted-foreground font-semibold mt-1 truncate">
-            {bestMatchItem ? `${bestMatchItem.jobTitle} @ ${bestMatchItem.companyName}` : 'Top ATS Match'}
+            {bestMatchItem ? `${bestMatchItem.jobTitle} @ ${bestMatchItem.companyName}` : 'No active scans'}
           </p>
         </div>
 
@@ -120,10 +128,10 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
           <div className="text-2xl sm:text-3xl font-black text-foreground tabular-nums">
-            {totalBulletFixes > 0 ? totalBulletFixes : 18}
+            {totalBulletFixes}
           </div>
           <p className="text-[11px] text-indigo-600 dark:text-indigo-400 font-semibold mt-1">
-            Ready to copy-paste
+            Generated rewrites
           </p>
         </div>
 
@@ -155,7 +163,7 @@ const Dashboard: React.FC = () => {
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
-              All Reports ({displayList.length})
+              All Reports ({history.length})
             </button>
             <button
               onClick={() => setActiveFilter('high')}
@@ -171,12 +179,40 @@ const Dashboard: React.FC = () => {
 
         </div>
 
-        {/* Cards Grid */}
+        {/* Cards Grid or Empty State */}
         {filteredAnalyses.length > 0 ? (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {filteredAnalyses.map((analysis) => (
               <ResumeCard key={analysis.id} analysis={analysis} />
             ))}
+          </div>
+        ) : history.length === 0 ? (
+          <div className="linear-card rounded-3xl p-10 sm:p-12 text-center border border-zinc-200 dark:border-zinc-800 space-y-4">
+            <div className="w-12 h-12 mx-auto rounded-2xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center border border-indigo-500/20">
+              <Sparkles className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="text-base font-bold text-foreground mb-1">No ATS Scans Yet</h3>
+              <p className="text-xs text-muted-foreground max-w-md mx-auto">
+                Upload your resume and test it against target job descriptions, or load verified sample reports to preview the workspace analytics.
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+              <button
+                type="button"
+                onClick={loadSampleHistory}
+                className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-foreground transition-all"
+              >
+                ✨ Load Example Scans
+              </button>
+              <Link
+                to="/analyzer"
+                onClick={reset}
+                className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white shadow-md transition-all"
+              >
+                Start New ATS Scan <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
           </div>
         ) : (
           <div className="linear-card rounded-2xl p-12 text-center border border-zinc-200 dark:border-zinc-800">

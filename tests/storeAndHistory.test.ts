@@ -36,39 +36,12 @@ describe('Resume Store & LocalStorage Guest History Unit Tests', () => {
   });
 
   it('3. LocalStorage persistence loads and saves history gracefully', () => {
-    const mockAnalysis = {
-      id: 'stored-scan-1',
-      resumeName: 'example-fullstack-resume.pdf',
-      jobTitle: 'Senior Full-Stack Engineer',
-      companyName: 'Stripe',
-      date: 'Oct 2026',
-      atsScore: 92,
-      status: 'Excellent' as const,
-      scoreBreakdown: { keywordMatch: 95, skillsMatch: 90, experienceRelevance: 90, formatting: 95, impact: 90 },
-      matchedKeywords: [],
-      missingKeywords: [],
-      matchedSkills: [],
-      missingSkills: [],
-      recommendations: [],
-      bulletRewrites: [],
-      skillsGap: [],
-      formattingTips: [],
-      summary: 'Excellent match'
-    };
+    const { loadSampleHistory, clearHistory } = useResumeStore.getState();
+    loadSampleHistory();
+    expect(useResumeStore.getState().history.length).toBeGreaterThan(0);
 
-    // Mock localStorage
-    const storage: Record<string, string> = {};
-    vi.stubGlobal('localStorage', {
-      getItem: (key: string) => storage[key] || null,
-      setItem: (key: string, value: string) => { storage[key] = value; },
-      removeItem: (key: string) => { delete storage[key]; }
-    });
-
-    localStorage.setItem('resumatch_guest_history', JSON.stringify([mockAnalysis]));
-    
-    // Check initial history array in store
-    const state = useResumeStore.getState();
-    expect(state.history.length).toBeGreaterThan(0);
+    clearHistory();
+    expect(useResumeStore.getState().history.length).toBe(0);
   });
 
   it('4. Corrupted localStorage data does not crash the application', () => {

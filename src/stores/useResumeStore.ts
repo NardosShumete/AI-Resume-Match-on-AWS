@@ -57,18 +57,18 @@ Requirements:
 - Passion for clean code, automated testing, and agile engineering best practices.`;
 
 const loadStoredHistory = (): AnalysisResult[] => {
-  if (typeof window === 'undefined') return mockAnalyses;
+  if (typeof window === 'undefined') return [];
   try {
     const raw = localStorage.getItem(GUEST_HISTORY_KEY);
-    if (!raw) return mockAnalyses;
+    if (!raw) return [];
     const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed) && parsed.length > 0) {
+    if (Array.isArray(parsed)) {
       return parsed;
     }
   } catch (err) {
     console.warn('Failed to parse guest history from localStorage:', err);
   }
-  return mockAnalyses;
+  return [];
 };
 
 const persistHistory = (history: AnalysisResult[]) => {
@@ -103,6 +103,8 @@ interface ResumeState {
   setJobDescription: (desc: string) => void;
   loadExampleData: () => void;
   loadSampleData: () => void;
+  loadSampleHistory: () => void;
+  clearHistory: () => void;
   analyzeResume: () => Promise<void>;
   reset: () => void;
   setCurrentAnalysis: (id: string) => void;
@@ -155,6 +157,18 @@ export const useResumeStore = create<ResumeState>((set, get) => ({
   },
   loadSampleData: () => {
     get().loadExampleData();
+  },
+
+  loadSampleHistory: () => {
+    persistHistory(mockAnalyses);
+    set({ history: mockAnalyses });
+  },
+
+  clearHistory: () => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(GUEST_HISTORY_KEY);
+    }
+    set({ history: [] });
   },
 
   analyzeResume: async () => {
