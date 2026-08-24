@@ -1,0 +1,14 @@
+version = 0.1
+
+[default.deploy.parameters]
+stack_name = "resumatch-ai"
+resolve_s3 = true
+s3_prefix = "resumatch-ai"
+region = "us-east-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "GeminiApiKey=\"AQ.Ab8RN6Kh28DS_Z8zG8gTWfFSfd5RptW5xaOL7YcU8nn6sPpvcg\""
+image_repositories = []
+
+[default.global.parameters]
+region = "us-east-1"

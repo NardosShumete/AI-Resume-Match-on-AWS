@@ -35,6 +35,27 @@ const Analyzer: React.FC = () => {
     { label: 'Job description text', ready: Boolean(jobDescription.trim().length > 30) },
   ];
 
+  const [loadingText, setLoadingText] = React.useState('Extracting resume...');
+
+  useEffect(() => {
+    if (status === 'processing') {
+      const texts = [
+        'Extracting resume...',
+        'Analyzing keywords...',
+        'Evaluating resume...',
+        'Generating AI recommendations...',
+        'Preparing your results...'
+      ];
+      let i = 0;
+      setLoadingText(texts[0]);
+      const interval = setInterval(() => {
+        i = (i + 1) % texts.length;
+        setLoadingText(texts[i]);
+      }, 1500);
+      return () => clearInterval(interval);
+    }
+  }, [status]);
+
   return (
     <div className="max-w-5xl mx-auto space-y-8 animate-in fade-in duration-300">
       
@@ -192,7 +213,7 @@ const Analyzer: React.FC = () => {
           {status === 'processing' ? (
             <>
               <Zap className="w-4 h-4 animate-spin text-amber-300" />
-              Scoring ATS Match...
+              {loadingText}
             </>
           ) : (
             <>
