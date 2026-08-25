@@ -2,6 +2,9 @@
 
 > **AI-Powered Resume Analysis & AWS Serverless ATS Engine**  
 > Analyze resumes against real-world job descriptions, calculate deterministic 0–100 ATS compatibility scores across 5 key dimensions, identify missing keywords, and generate tailored AI bullet point rewrites using Google Gemini 3.6 Flash on AWS Serverless.
+> 
+> **ማብራሪያ (Amharic Overview):**  
+> ResuMatch AI በሰው ሰራሽ አስተውሎት (AI) የተደገፈ የስራ ማመልከቻ (Resume) መገምገሚያ ነው። የስራ ማመልከቻዎን ከስራው መስፈርት ጋር በማነፃፀር ምን ያህል ተቀባይነት እንዳለው ይገመግማል፤ እንዲሁም የተሻለ የስራ እድል እንዲያገኙ ይረዳዎታል።
 
 ---
 
