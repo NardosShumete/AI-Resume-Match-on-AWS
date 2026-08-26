@@ -2,8 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Frown } from 'lucide-react';
 import { Button } from '../components/ui/Button';
+import { useLanguageStore } from '../i18n/useLanguageStore';
 
 const NotFound: React.FC = () => {
+  const { t } = useLanguageStore();
+
   return (
     <div className="min-h-[70vh] flex flex-col items-center justify-center text-center animate-fade-up">
       <div className="relative mb-8">
@@ -16,21 +19,16 @@ const NotFound: React.FC = () => {
       </div>
 
       <h1 className="text-5xl font-black text-foreground mb-3">404</h1>
-      <h2 className="text-xl font-bold text-foreground mb-3">Page not found</h2>
+      <h2 className="text-xl font-bold text-foreground mb-3">{t.notFound.title}</h2>
       <p className="text-muted-foreground max-w-sm mb-8 leading-relaxed">
-        The page you're looking for doesn't exist or may have been moved. Let's get you back on track.
+        {t.notFound.desc}
       </p>
 
       <div className="flex gap-3">
-        <Link to="/">
+        <Link to="/dashboard">
           <Button variant="primary" size="md">
             <ArrowLeft className="w-4 h-4" />
-            Back to Home
-          </Button>
-        </Link>
-        <Link to="/dashboard">
-          <Button variant="outline" size="md">
-            View Dashboard
+            {t.notFound.backHome}
           </Button>
         </Link>
       </div>

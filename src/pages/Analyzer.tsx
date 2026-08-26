@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useResumeStore } from '../stores/useResumeStore';
+import { useLanguageStore } from '../i18n/useLanguageStore';
 import { UploadDropzone } from '../components/analyzer/UploadDropzone';
 import { JobInformationForm } from '../components/analyzer/JobInformationForm';
 import { JobDescriptionInput } from '../components/analyzer/JobDescriptionInput';
@@ -8,6 +9,7 @@ import { Sparkles, ArrowRight, CheckCircle2, ShieldCheck, Zap } from 'lucide-rea
 
 const Analyzer: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useLanguageStore();
   const {
     resumeFile,
     resumeMetadata,
@@ -30,21 +32,21 @@ const Analyzer: React.FC = () => {
   }, [status, navigate]);
 
   const checklist = [
-    { label: 'Resume PDF parsed', ready: Boolean(pdfState === 'success' && resumeMetadata) },
-    { label: 'Target company & role', ready: Boolean(companyName.trim() && jobTitle.trim()) },
-    { label: 'Job description text', ready: Boolean(jobDescription.trim().length > 30) },
+    { label: t.analyzer.step1, ready: Boolean(pdfState === 'success' && resumeMetadata) },
+    { label: t.analyzer.step2, ready: Boolean(companyName.trim() && jobTitle.trim()) },
+    { label: t.analyzer.jdLabel, ready: Boolean(jobDescription.trim().length > 30) },
   ];
 
-  const [loadingText, setLoadingText] = React.useState('Extracting resume...');
+  const [loadingText, setLoadingText] = React.useState(t.loading.step1);
 
   useEffect(() => {
     if (status === 'processing') {
       const texts = [
-        'Extracting resume...',
-        'Analyzing keywords...',
-        'Evaluating resume...',
-        'Generating AI recommendations...',
-        'Preparing your results...'
+        t.loading.step1,
+        t.loading.step2,
+        t.loading.step3,
+        t.loading.step4,
+        t.loading.step5
       ];
       let i = 0;
       setLoadingText(texts[0]);
@@ -54,7 +56,7 @@ const Analyzer: React.FC = () => {
       }, 1500);
       return () => clearInterval(interval);
     }
-  }, [status]);
+  }, [status, t]);
 
   return (
     <div className="max-w-5xl mx-auto space-y-8 animate-in fade-in duration-300">
@@ -66,13 +68,13 @@ const Analyzer: React.FC = () => {
             <span className="px-2.5 py-0.5 text-[11px] font-bold bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 rounded-md">
               ATS Studio
             </span>
-            <span className="text-xs text-muted-foreground">• Ready to match</span>
+            <span className="text-xs text-muted-foreground">• {t.nav.liveWorkspace}</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
-            Resume & Job Matcher
+            {t.analyzer.title}
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Provide the job details and your resume to simulate an ATS parser pass.
+            {t.analyzer.subtitle}
           </p>
         </div>
 
@@ -82,10 +84,10 @@ const Analyzer: React.FC = () => {
             type="button"
             onClick={loadExampleData}
             className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-indigo-50 to-violet-50 dark:from-indigo-950/60 dark:to-violet-950/60 hover:from-indigo-100 hover:to-violet-100 dark:hover:from-indigo-900/60 dark:hover:to-violet-900/60 text-indigo-600 dark:text-indigo-400 border border-indigo-200/80 dark:border-indigo-800/80 shadow-xs transition-all active:scale-[0.98]"
-            title="Populate an example resume and job description to test the ATS engine immediately"
+            title={t.analyzer.loadSampleData}
           >
             <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
-            ✨ Load Example Data
+            {t.analyzer.loadSampleData}
           </button>
 
           {/* Readiness Pill Status */}
@@ -102,7 +104,7 @@ const Analyzer: React.FC = () => {
               ))}
             </div>
             <span className="text-xs font-semibold text-foreground">
-              {checklist.filter((i) => i.ready).length} / 3 Steps Ready
+              {checklist.filter((i) => i.ready).length} / 3
             </span>
           </div>
         </div>
@@ -113,7 +115,7 @@ const Analyzer: React.FC = () => {
         <div className="flex items-start gap-2.5">
           <Sparkles className="w-4 h-4 text-indigo-500 shrink-0 mt-0.5" />
           <div className="text-muted-foreground leading-relaxed">
-            <span className="font-bold text-foreground">How it works:</span> Upload your PDF resume and paste target job requirements. The engine parses key competencies, evaluates your ATS score, and generates targeted AI bullet point rewrites.
+            <span className="font-bold text-foreground">{t.analyzer.title}:</span> {t.analyzer.subtitle}
           </div>
         </div>
         <button
@@ -121,7 +123,7 @@ const Analyzer: React.FC = () => {
           onClick={loadExampleData}
           className="shrink-0 font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1 cursor-pointer"
         >
-          Load Example Data →
+          {t.analyzer.loadSampleData} →
         </button>
       </div>
 
@@ -136,7 +138,7 @@ const Analyzer: React.FC = () => {
                 <span className="w-6 h-6 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-bold text-xs flex items-center justify-center border border-indigo-500/20">
                   1
                 </span>
-                <h2 className="text-sm font-bold text-foreground uppercase tracking-wider">Target Job Details</h2>
+                <h2 className="text-sm font-bold text-foreground uppercase tracking-wider">{t.analyzer.jobDetailsTitle}</h2>
               </div>
             </div>
 
@@ -154,7 +156,7 @@ const Analyzer: React.FC = () => {
               <span className="w-6 h-6 rounded-lg bg-violet-500/10 text-violet-600 dark:text-violet-400 font-bold text-xs flex items-center justify-center border border-violet-500/20">
                 2
               </span>
-              <h2 className="text-sm font-bold text-foreground uppercase tracking-wider">Upload Resume</h2>
+              <h2 className="text-sm font-bold text-foreground uppercase tracking-wider">{t.analyzer.uploadTitle}</h2>
             </div>
 
             <UploadDropzone />
@@ -164,7 +166,7 @@ const Analyzer: React.FC = () => {
           <div className="linear-card rounded-2xl p-5 border border-zinc-200/80 dark:border-zinc-800 space-y-3">
             <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
               <ShieldCheck className="w-4 h-4 text-indigo-500" />
-              Pre-Analysis Checks
+              Checklist
             </h3>
 
             <div className="space-y-2 text-xs">
@@ -198,10 +200,10 @@ const Analyzer: React.FC = () => {
       <div className="linear-card rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 border border-zinc-200/80 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/80">
         <div className="text-center sm:text-left">
           <p className="text-sm font-bold text-foreground">
-            {isFormValid ? 'Everything is ready for processing!' : 'Fill in all fields to start analysis'}
+            {isFormValid ? t.analyzer.analyzeButton : t.analyzer.fillRequiredFields}
           </p>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Takes ~2 seconds • Analyzes formatting, keywords & seniority gap
+            {t.footer.privacyNote}
           </p>
         </div>
 
@@ -218,7 +220,7 @@ const Analyzer: React.FC = () => {
           ) : (
             <>
               <Sparkles className="w-4 h-4" />
-              Run Full ATS Match Analysis
+              {t.analyzer.analyzeButton}
               <ArrowRight className="w-4 h-4" />
             </>
           )}

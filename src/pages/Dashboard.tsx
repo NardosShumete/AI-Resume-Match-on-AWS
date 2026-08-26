@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom';
 import { Plus, Target, Trophy, TrendingUp, Sparkles, Search, Layers, Trash2, ArrowRight } from 'lucide-react';
 import { ResumeCard } from '../components/home/ResumeCard';
 import { useResumeStore } from '../stores/useResumeStore';
+import { useLanguageStore } from '../i18n/useLanguageStore';
 
 const Dashboard: React.FC = () => {
   const { reset, history, clearHistory, loadSampleHistory } = useResumeStore();
+  const { t } = useLanguageStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<'all' | 'high'>('all');
 
@@ -33,14 +35,14 @@ const Dashboard: React.FC = () => {
         <div>
           <div className="flex items-center gap-2 mb-1">
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
-              ATS Overview
+              {t.dashboard.title}
             </h1>
             <span className="px-2 py-0.5 text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 rounded-md">
-              Live Workspace
+              {t.nav.liveWorkspace}
             </span>
           </div>
           <p className="text-sm text-muted-foreground">
-            Welcome to ResuMatch. Track and optimize your active resume scans.
+            {t.dashboard.subtitle}
           </p>
         </div>
 
@@ -50,10 +52,10 @@ const Dashboard: React.FC = () => {
               type="button"
               onClick={clearHistory}
               className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-500/10 hover:bg-rose-100 dark:hover:bg-rose-500/20 transition-all border border-rose-200 dark:border-rose-500/20"
-              title="Clear all saved scan history"
+              title={t.dashboard.clearScans}
             >
               <Trash2 className="w-3.5 h-3.5" />
-              Clear Scans
+              {t.dashboard.clearScans}
             </button>
           )}
 
@@ -63,7 +65,7 @@ const Dashboard: React.FC = () => {
             className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white shadow-md shadow-indigo-500/25 transition-all active:scale-[0.98]"
           >
             <Plus className="w-4 h-4 stroke-[2.5]" />
-            New ATS Analysis
+            {t.dashboard.newAnalysis}
           </Link>
         </div>
       </div>
@@ -74,7 +76,7 @@ const Dashboard: React.FC = () => {
         {/* Metric 1 */}
         <div className="linear-card rounded-2xl p-5 border border-zinc-200/80 dark:border-zinc-800">
           <div className="flex items-center justify-between text-muted-foreground mb-3">
-            <span className="text-xs font-semibold">Total Resumes Checked</span>
+            <span className="text-xs font-semibold">{t.dashboard.totalResumes}</span>
             <div className="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-500 flex items-center justify-center">
               <Layers className="w-4 h-4" />
             </div>
@@ -83,14 +85,14 @@ const Dashboard: React.FC = () => {
             {totalAnalyses}
           </div>
           <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold mt-1 flex items-center gap-1">
-            <TrendingUp className="w-3 h-3" /> Active scans
+            <TrendingUp className="w-3 h-3" /> {t.dashboard.activeScans}
           </p>
         </div>
 
         {/* Metric 2 */}
         <div className="linear-card rounded-2xl p-5 border border-zinc-200/80 dark:border-zinc-800">
           <div className="flex items-center justify-between text-muted-foreground mb-3">
-            <span className="text-xs font-semibold">Avg ATS Match Rate</span>
+            <span className="text-xs font-semibold">{t.dashboard.avgMatchRate}</span>
             <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
               <Target className="w-4 h-4" />
             </div>
@@ -99,14 +101,14 @@ const Dashboard: React.FC = () => {
             {averageScore}%
           </div>
           <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold mt-1 flex items-center gap-1">
-            <TrendingUp className="w-3 h-3" /> Target: ≥ 80%
+            <TrendingUp className="w-3 h-3" /> {t.dashboard.targetRate}
           </p>
         </div>
 
         {/* Metric 3 */}
         <div className="linear-card rounded-2xl p-5 border border-zinc-200/80 dark:border-zinc-800">
           <div className="flex items-center justify-between text-muted-foreground mb-3">
-            <span className="text-xs font-semibold">Highest Score</span>
+            <span className="text-xs font-semibold">{t.dashboard.highestScore}</span>
             <div className="w-8 h-8 rounded-lg bg-violet-500/10 text-violet-500 flex items-center justify-center">
               <Trophy className="w-4 h-4" />
             </div>
@@ -115,14 +117,14 @@ const Dashboard: React.FC = () => {
             {bestMatch}%
           </div>
           <p className="text-[11px] text-muted-foreground font-semibold mt-1 truncate">
-            {bestMatchItem ? `${bestMatchItem.jobTitle} @ ${bestMatchItem.companyName}` : 'No active scans'}
+            {bestMatchItem ? `${bestMatchItem.jobTitle} @ ${bestMatchItem.companyName}` : t.dashboard.noActiveScans}
           </p>
         </div>
 
         {/* Metric 4 */}
         <div className="linear-card rounded-2xl p-5 border border-zinc-200/80 dark:border-zinc-800">
           <div className="flex items-center justify-between text-muted-foreground mb-3">
-            <span className="text-xs font-semibold">AI Bullet Fixes</span>
+            <span className="text-xs font-semibold">{t.dashboard.bulletFixes}</span>
             <div className="w-8 h-8 rounded-lg bg-cyan-500/10 text-cyan-500 flex items-center justify-center">
               <Sparkles className="w-4 h-4" />
             </div>
@@ -131,7 +133,7 @@ const Dashboard: React.FC = () => {
             {totalBulletFixes}
           </div>
           <p className="text-[11px] text-indigo-600 dark:text-indigo-400 font-semibold mt-1">
-            Generated rewrites
+            {t.dashboard.generatedRewrites}
           </p>
         </div>
 
@@ -147,7 +149,7 @@ const Dashboard: React.FC = () => {
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input
               type="text"
-              placeholder="Search by role, company, or file..."
+              placeholder={t.dashboard.searchPlaceholder}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-9 pr-4 py-2 text-xs font-medium bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/40 text-foreground placeholder:text-muted-foreground/60"
@@ -163,7 +165,7 @@ const Dashboard: React.FC = () => {
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
-              All Reports ({history.length})
+              {t.dashboard.allReports} ({history.length})
             </button>
             <button
               onClick={() => setActiveFilter('high')}
@@ -173,7 +175,7 @@ const Dashboard: React.FC = () => {
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
-              Top Matches (80%+)
+              {t.dashboard.topMatches}
             </button>
           </div>
 
@@ -192,9 +194,9 @@ const Dashboard: React.FC = () => {
               <Sparkles className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-foreground mb-1">No ATS Scans Yet</h3>
+              <h3 className="text-base font-bold text-foreground mb-1">{t.dashboard.noScansTitle}</h3>
               <p className="text-xs text-muted-foreground max-w-md mx-auto">
-                Upload your resume and test it against target job descriptions, or load verified sample reports to preview the workspace analytics.
+                {t.dashboard.noScansDesc}
               </p>
             </div>
             <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
@@ -203,20 +205,20 @@ const Dashboard: React.FC = () => {
                 onClick={loadSampleHistory}
                 className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-foreground transition-all"
               >
-                ✨ Load Example Scans
+                {t.dashboard.loadExampleScans}
               </button>
               <Link
                 to="/analyzer"
                 onClick={reset}
                 className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white shadow-md transition-all"
               >
-                Start New ATS Scan <ArrowRight className="w-3.5 h-3.5" />
+                {t.dashboard.startNewScan} <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
           </div>
         ) : (
           <div className="linear-card rounded-2xl p-12 text-center border border-zinc-200 dark:border-zinc-800">
-            <p className="text-sm font-semibold text-muted-foreground">No reports matching "{searchQuery}"</p>
+            <p className="text-sm font-semibold text-muted-foreground">{t.dashboard.noMatchingReports} "{searchQuery}"</p>
           </div>
         )}
 

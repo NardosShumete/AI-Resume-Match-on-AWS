@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Trophy } from 'lucide-react';
+import { useLanguageStore } from '../../i18n/useLanguageStore';
 
 interface ScoreGaugeProps {
   score: number;
@@ -7,6 +8,7 @@ interface ScoreGaugeProps {
 
 export const ScoreGauge: React.FC<ScoreGaugeProps> = ({ score }) => {
   const [animatedScore, setAnimatedScore] = useState(0);
+  const { t } = useLanguageStore();
 
   useEffect(() => {
     const timer = setTimeout(() => setAnimatedScore(score), 100);
@@ -20,6 +22,8 @@ export const ScoreGauge: React.FC<ScoreGaugeProps> = ({ score }) => {
   const isExcellent = score >= 85;
   const isGood = score >= 70;
 
+  const tierText = isExcellent ? t.scoreTiers.strong : isGood ? t.scoreTiers.good : t.scoreTiers.needsImprovement;
+
   return (
     <div className="linear-card rounded-2xl p-6 border border-zinc-200/80 dark:border-zinc-800 flex flex-col items-center text-center relative overflow-hidden">
       
@@ -28,10 +32,10 @@ export const ScoreGauge: React.FC<ScoreGaugeProps> = ({ score }) => {
 
       <div className="flex items-center justify-between w-full mb-4">
         <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-          Overall ATS Match
+          {t.results.overallMatch}
         </span>
         <span className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20">
-          <Trophy className="w-3 h-3" /> Top Tier Match
+          <Trophy className="w-3 h-3" /> {tierText}
         </span>
       </div>
 
@@ -76,7 +80,7 @@ export const ScoreGauge: React.FC<ScoreGaugeProps> = ({ score }) => {
             {animatedScore}%
           </span>
           <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-0.5">
-            ATS Score
+            {t.resumeCard.atsScore}
           </span>
         </div>
       </div>
@@ -84,10 +88,10 @@ export const ScoreGauge: React.FC<ScoreGaugeProps> = ({ score }) => {
       {/* Summary Description */}
       <div className="mt-2 space-y-1.5">
         <p className="text-sm font-bold text-foreground">
-          {isExcellent ? 'High Probability of Recruiter Callback' : isGood ? 'Solid Foundation with Quick Wins' : 'Requires Optimization Before Applying'}
+          {tierText}
         </p>
         <p className="text-xs text-muted-foreground leading-relaxed">
-          Your resume surpasses 82% of applicants targeting this seniority tier.
+          {t.results.overallMatch}: {animatedScore}%
         </p>
       </div>
 

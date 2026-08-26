@@ -6,6 +6,7 @@ interface AnalyzeRequest {
   jobDescription?: string;
   targetJobTitle?: string;
   targetCompany?: string;
+  language?: 'en' | 'am';
 }
 
 export const handler = async (
@@ -45,7 +46,7 @@ export const handler = async (
       };
     }
 
-    const { resumeText, jobDescription, targetJobTitle, targetCompany } = payload;
+    const { resumeText, jobDescription, targetJobTitle, targetCompany, language = 'en' } = payload;
 
     if (!resumeText || !jobDescription) {
       return {
@@ -84,7 +85,8 @@ export const handler = async (
       jobDescription,
       'Resume', // A fallback if file name isn't provided from frontend
       targetCompany || 'Target Company',
-      targetJobTitle || 'Target Role'
+      targetJobTitle || 'Target Role',
+      language
     );
     
     const duration = Date.now() - startTime;

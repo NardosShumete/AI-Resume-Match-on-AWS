@@ -23,7 +23,8 @@ export async function generateAiFeedback(
   resumeText: string,
   jobDescription: string,
   atsScore: number,
-  missingSkills: string[]
+  missingSkills: string[],
+  language: 'en' | 'am' = 'en'
 ): Promise<GeminiFeedbackResponse> {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
@@ -33,9 +34,15 @@ export async function generateAiFeedback(
 
   const ai = new GoogleGenAI({ apiKey });
 
+  const languageInstruction = language === 'am'
+    ? `LANGUAGE INSTRUCTION: Output all user-facing explanations, issues, section names, recommendations, improved bullet points, and reasons in natural, professional Amharic (አማርኛ). Keep technical names (such as React, Node.js, AWS, TypeScript, PostgreSQL, Docker, Git, etc.) in English where appropriate for clarity. Keep JSON keys strictly in English matching the schema.`
+    : `LANGUAGE INSTRUCTION: Output all user-facing content in professional English. Keep JSON keys strictly in English matching the schema.`;
+
   const prompt = `
 You are an expert technical recruiter and ATS specialist.
 Analyze this resume against the job description and the calculated deterministic analysis.
+
+${languageInstruction}
 
 Resume:
 ${resumeText.substring(0, 3000)}

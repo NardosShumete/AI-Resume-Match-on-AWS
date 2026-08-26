@@ -12,7 +12,14 @@ import { getScoreTier } from '../utils/scoreTier';
 import { generateAiFeedback } from '../services/gemini';
 import { v4 as uuidv4 } from 'uuid';
 
-export async function analyzeResume(resumeText: string, jobDescriptionText: string, resumeName: string, companyName: string, jobTitle: string): Promise<AnalysisResult> {
+export async function analyzeResume(
+  resumeText: string,
+  jobDescriptionText: string,
+  resumeName: string,
+  companyName: string,
+  jobTitle: string,
+  language: 'en' | 'am' = 'en'
+): Promise<AnalysisResult> {
   // 1. Deterministic Parsing
   const parsedResume = parseResumeSections(resumeText);
   const parsedJd = parseJobDescription(jobDescriptionText);
@@ -44,7 +51,7 @@ export async function analyzeResume(resumeText: string, jobDescriptionText: stri
     .filter(s => s.importance === 'high' || s.importance === 'medium')
     .map(s => s.skill);
 
-  const aiFeedback = await generateAiFeedback(resumeText, jobDescriptionText, atsScore, criticalMissingSkills);
+  const aiFeedback = await generateAiFeedback(resumeText, jobDescriptionText, atsScore, criticalMissingSkills, language);
 
   // 5. Construct Final Result
   const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Moon, Sun, Menu, X, LogOut, Sparkles, FileText, ChevronRight } from 'lucide-react';
+import { Moon, Sun, Menu, X, Sparkles, ChevronRight } from 'lucide-react';
 import { cn } from '../../lib/utils';
-import { useAuthStore } from '../../stores/useAuthStore';
+import { LanguageSwitcher } from './LanguageSwitcher';
+import { useLanguageStore } from '../../i18n/useLanguageStore';
 
 export const Header: React.FC = () => {
   const [isDark, setIsDark] = useState(() => {
@@ -12,7 +13,7 @@ export const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
-  const { isAuthenticated, user, logout } = useAuthStore();
+  const { t } = useLanguageStore();
 
   useEffect(() => {
     if (isDark) {
@@ -33,9 +34,9 @@ export const Header: React.FC = () => {
   }, [location.pathname]);
 
   const navLinks = [
-    { name: 'Overview', path: '/' },
-    { name: 'Dashboard', path: '/dashboard' },
-    { name: 'ATS Engine', path: '/analyzer' },
+    { name: t.nav.overview, path: '/' },
+    { name: t.nav.overview === 'Overview' ? 'Dashboard' : 'ዳሽቦርድ', path: '/dashboard' },
+    { name: t.nav.analyzer, path: '/analyzer' },
   ];
 
   return (
@@ -86,13 +87,16 @@ export const Header: React.FC = () => {
 
             {/* Desktop Actions */}
             <div className="hidden md:flex items-center gap-3">
+              {/* Language Switcher */}
+              <LanguageSwitcher />
+
               {/* Status Badge */}
               <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 dark:bg-emerald-500/15 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                 </span>
-                <span>Live ATS Engine</span>
+                <span>{t.nav.liveWorkspace}</span>
               </div>
 
               <button
@@ -111,19 +115,22 @@ export const Header: React.FC = () => {
                 className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white shadow-sm shadow-indigo-500/25 transition-all hover:shadow-md hover:shadow-indigo-500/30 active:scale-[0.98]"
               >
                 <Sparkles className="w-3 h-3" />
-                Analyze Resume
+                {t.analyzer.title}
                 <ChevronRight className="w-3 h-3 opacity-70" />
               </Link>
             </div>
 
             {/* Mobile Hamburger */}
-            <button
-              className="md:hidden w-8 h-8 flex items-center justify-center text-foreground rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-900"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              aria-label="Toggle menu"
-            >
-              {isMobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
-            </button>
+            <div className="flex items-center gap-2 md:hidden">
+              <LanguageSwitcher />
+              <button
+                className="w-8 h-8 flex items-center justify-center text-foreground rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-900"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                aria-label="Toggle menu"
+              >
+                {isMobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+              </button>
+            </div>
           </div>
         </div>
       </header>

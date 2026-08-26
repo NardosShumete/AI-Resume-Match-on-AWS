@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { UploadCloud, FileText, CheckCircle2, X, AlertCircle, Sparkles, FileWarning, Eye, Code } from 'lucide-react';
 import { useResumeStore } from '../../stores/useResumeStore';
 import { usePdfParser } from '../../hooks/usePdfParser';
+import { useLanguageStore } from '../../i18n/useLanguageStore';
 import { cn } from '../../lib/utils';
 
 export const UploadDropzone: React.FC = () => {
@@ -9,6 +10,7 @@ export const UploadDropzone: React.FC = () => {
   const [showExtractedText, setShowExtractedText] = useState(false);
   const { resumeFile, resumeMetadata, pdfState, pdfError, loadSampleData } = useResumeStore();
   const { parsePdf, reset } = usePdfParser();
+  const { t } = useLanguageStore();
 
   const handleDrag = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -63,15 +65,15 @@ export const UploadDropzone: React.FC = () => {
               <div className="flex items-center gap-2 mt-0.5 text-[11px] text-muted-foreground font-medium">
                 <span>{formatBytes(resumeMetadata.fileSize)}</span>
                 <span>•</span>
-                <span>{resumeMetadata.pageCount} page{resumeMetadata.pageCount !== 1 ? 's' : ''}</span>
+                <span>{resumeMetadata.pageCount} {t.analyzer.pages}</span>
                 <span>•</span>
-                <span>{resumeMetadata.wordCount} words</span>
+                <span>{resumeMetadata.wordCount} {t.analyzer.words}</span>
               </div>
             </div>
             <button
               onClick={reset}
               className="p-1.5 rounded-lg text-muted-foreground hover:text-rose-500 hover:bg-rose-500/10 transition-colors"
-              title="Remove resume"
+              title={t.analyzer.chooseAnotherFile}
             >
               <X className="w-4 h-4" />
             </button>
@@ -141,8 +143,8 @@ export const UploadDropzone: React.FC = () => {
           <FileText className="w-6 h-6 animate-pulse" />
         </div>
         <div>
-          <p className="font-bold text-sm text-foreground">Parsing PDF Structure & Text...</p>
-          <p className="text-xs text-muted-foreground mt-0.5">Running local extraction engine</p>
+          <p className="font-bold text-sm text-foreground">{t.analyzer.extractingPdf}</p>
+          <p className="text-xs text-muted-foreground mt-0.5">{t.loading.pleaseWait}</p>
         </div>
         <div className="w-full max-w-xs h-1.5 bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden">
           <div className="h-full bg-indigo-500 w-1/2 rounded-full animate-bounce" style={{ animationDuration: '2s' }} />
@@ -191,10 +193,10 @@ export const UploadDropzone: React.FC = () => {
         </div>
 
         <p className="font-bold text-sm text-foreground">
-          {dragActive ? 'Drop your PDF here' : 'Drop your resume PDF here'}
+          {dragActive ? t.analyzer.dragDropText : t.analyzer.uploadTitle}
         </p>
         <p className="text-xs text-muted-foreground mt-1 mb-4">
-          or <span className="text-indigo-600 dark:text-indigo-400 font-semibold underline underline-offset-2">browse files</span> from your computer
+          <span className="text-indigo-600 dark:text-indigo-400 font-semibold underline underline-offset-2">{t.analyzer.selectPdf}</span>
         </p>
 
         {/* Quick 1-click Example Fill */}
@@ -202,15 +204,15 @@ export const UploadDropzone: React.FC = () => {
           type="button"
           onClick={handleUseDemo}
           className="relative z-20 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-100 dark:bg-zinc-800 text-foreground hover:bg-indigo-600 hover:text-white transition-all shadow-xs border border-zinc-200 dark:border-zinc-700"
-          title="Pre-fill with an example software engineering resume"
+          title={t.analyzer.loadSampleData}
         >
           <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-          ✨ Load Example Resume
+          {t.analyzer.loadSampleData}
         </button>
 
         <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground mt-4">
           <AlertCircle className="w-3 h-3" />
-          Supports PDF format • 100% Client-side privacy
+          {t.analyzer.uploadDesc} • {t.footer.privacyNote}
         </div>
       </div>
     </div>

@@ -5,6 +5,7 @@ export interface AnalyzeResumePayload {
   jobDescription: string;
   targetJobTitle?: string;
   targetCompany?: string;
+  language?: 'en' | 'am';
 }
 
 export interface ApiResponse<T> {

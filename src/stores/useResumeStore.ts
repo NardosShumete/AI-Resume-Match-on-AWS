@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { mockAnalyses } from '../data/mockAnalyses';
 import type { AnalysisResult } from '../types/analysis';
 import type { PdfMetadata, PdfParserState } from '../types/pdf';
+import { useLanguageStore } from '../i18n/useLanguageStore';
 
 const GUEST_HISTORY_KEY = 'resumatch_guest_history';
 
@@ -183,12 +184,14 @@ export const useResumeStore = create<ResumeState>((set, get) => ({
     
     try {
       const { analyzeResume: runAnalysis } = await import('../services/api');
+      const currentLanguage = useLanguageStore.getState().language;
       
       const result = await runAnalysis({
         resumeText: resumeMetadata.extractedText,
         jobDescription,
         targetCompany: companyName,
-        targetJobTitle: jobTitle
+        targetJobTitle: jobTitle,
+        language: currentLanguage
       });
 
       // Update history in state and persist to localStorage

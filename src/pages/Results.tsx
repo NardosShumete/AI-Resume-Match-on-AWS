@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, Download, RefreshCw, FileText, Building2 } from 'lucide-react';
 import { useResumeStore } from '../stores/useResumeStore';
+import { useLanguageStore } from '../i18n/useLanguageStore';
 import { ScoreGauge } from '../components/results/ScoreGauge';
 import { ScoreBreakdown } from '../components/results/ScoreBreakdown';
 import { KeywordSection } from '../components/results/KeywordSection';
@@ -10,6 +11,7 @@ import { FeedbackAccordion } from '../components/results/FeedbackAccordion';
 const Results: React.FC = () => {
   const navigate = useNavigate();
   const { analysisResults, reset } = useResumeStore();
+  const { t } = useLanguageStore();
 
   useEffect(() => {
     if (!analysisResults) {
@@ -29,7 +31,7 @@ const Results: React.FC = () => {
             to="/dashboard"
             className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors mb-2"
           >
-            <ArrowLeft className="w-3.5 h-3.5" /> Back to Dashboard
+            <ArrowLeft className="w-3.5 h-3.5" /> {t.results.backToDashboard}
           </Link>
           
           <div className="flex flex-wrap items-center gap-3">
@@ -47,7 +49,7 @@ const Results: React.FC = () => {
               <FileText className="w-3 h-3" /> {analysisResults.resumeName}
             </span>
             <span>•</span>
-            <span>Analyzed on {analysisResults.date}</span>
+            <span>{t.results.analyzedOn} {analysisResults.date}</span>
           </p>
         </div>
 
@@ -61,7 +63,7 @@ const Results: React.FC = () => {
             className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-200 dark:hover:bg-zinc-800 text-foreground border border-zinc-200 dark:border-zinc-800 transition-all active:scale-[0.98]"
           >
             <RefreshCw className="w-3.5 h-3.5" />
-            Analyze Another Job
+            {t.results.analyzeAnother}
           </button>
 
           <button
@@ -69,7 +71,7 @@ const Results: React.FC = () => {
             className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white shadow-md shadow-indigo-500/25 transition-all active:scale-[0.98]"
           >
             <Download className="w-3.5 h-3.5" />
-            Export Report (PDF)
+            {t.results.exportPdf}
           </button>
         </div>
       </div>

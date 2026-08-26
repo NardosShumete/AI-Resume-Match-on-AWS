@@ -1,8 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { BarChart3, Code, Mail, Share2 } from 'lucide-react';
+import { Code, Mail, Share2 } from 'lucide-react';
+import { useLanguageStore } from '../../i18n/useLanguageStore';
 
 export const Footer: React.FC = () => {
+  const { t } = useLanguageStore();
+
   return (
     <footer className="w-full border-t border-border/50 mt-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
@@ -15,16 +18,17 @@ export const Footer: React.FC = () => {
               <span className="gradient-text">.AI</span>
             </span>
             <span className="text-muted-foreground text-xs ml-2">
-              © {new Date().getFullYear()} · All rights reserved
+              © {new Date().getFullYear()} · {t.footer.rights}
             </span>
           </div>
 
           {/* Links */}
           <div className="flex items-center gap-6 text-sm text-muted-foreground">
-            <Link to="/" className="hover:text-foreground transition-colors">Home</Link>
-            <Link to="/dashboard" className="hover:text-foreground transition-colors">Dashboard</Link>
-            <a href="#" className="hover:text-foreground transition-colors">Privacy</a>
-            <a href="#" className="hover:text-foreground transition-colors">Terms</a>
+            <Link to="/" className="hover:text-foreground transition-colors">{t.nav.overview}</Link>
+            <Link to="/dashboard" className="hover:text-foreground transition-colors">
+              {t.nav.overview === 'Overview' ? 'Dashboard' : 'ዳሽቦርድ'}
+            </Link>
+            <span className="text-xs text-muted-foreground">{t.footer.privacyNote}</span>
           </div>
 
           {/* Social */}

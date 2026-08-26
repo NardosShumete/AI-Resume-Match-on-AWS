@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { FileText, Calendar, ArrowRight, Building2, Check } from 'lucide-react';
 import type { AnalysisResult } from '../../types/analysis';
 import { useResumeStore } from '../../stores/useResumeStore';
+import { useLanguageStore } from '../../i18n/useLanguageStore';
 
 interface ResumeCardProps {
   analysis: AnalysisResult;
@@ -10,6 +11,7 @@ interface ResumeCardProps {
 
 export const ResumeCard: React.FC<ResumeCardProps> = ({ analysis }) => {
   const { setCurrentAnalysis } = useResumeStore();
+  const { t } = useLanguageStore();
 
   const radius = 22;
   const circumference = 2 * Math.PI * radius;
@@ -100,7 +102,7 @@ export const ResumeCard: React.FC<ResumeCardProps> = ({ analysis }) => {
           onClick={() => setCurrentAnalysis(analysis.id)}
           className="inline-flex items-center gap-1 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 transition-colors"
         >
-          View Full Report
+          {t.resumeCard.viewAnalysis}
           <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
         </Link>
       </div>
