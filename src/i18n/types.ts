@@ -110,11 +110,12 @@ export interface TranslationDictionary {
     noSkillsGap: string;
   };
   breakdown: {
-    keywordMatch: string;
+    roleCompatibility: string;
+    requiredQualifications: string;
     skillsMatch: string;
     experienceRelevance: string;
-    formatting: string;
-    impact: string;
+    keywordMatch: string;
+    resumeQuality: string;
   };
   scoreTiers: {
     strong: string;

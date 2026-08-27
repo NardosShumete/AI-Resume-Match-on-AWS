@@ -10,11 +10,12 @@ export const mockAnalyses: AnalysisResult[] = [
     atsScore: 82,
     status: 'Strong',
     scoreBreakdown: {
-      keywordMatch: 85,
+      roleCompatibility: 90,
+      requiredQualifications: 100,
       skillsMatch: 78,
       experienceRelevance: 82,
-      formatting: 90,
-      impact: 80,
+      keywordMatch: 85,
+      resumeQuality: 85,
     },
     matchedKeywords: [
       { keyword: 'React', importance: 'high' },
@@ -30,6 +31,11 @@ export const mockAnalyses: AnalysisResult[] = [
       { keyword: 'Kubernetes', importance: 'low' },
       { keyword: 'CI/CD', importance: 'medium' }
     ],
+    roleDomain: { candidate: 'Software Engineering', target: 'Software Engineering' },
+    requiredQualifications: {
+      matched: ['Bachelor\'s Degree in Computer Science or related field', '3+ years experience with React'],
+      missing: ['Experience with AWS']
+    },
     matchedSkills: [
       { skill: 'React', importance: 'high' },
       { skill: 'TypeScript', importance: 'high' }

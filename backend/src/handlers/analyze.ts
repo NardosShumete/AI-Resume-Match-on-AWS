@@ -46,9 +46,11 @@ export const handler = async (
       };
     }
 
-    const { resumeText, jobDescription, targetJobTitle, targetCompany, language = 'en' } = payload;
+    const { targetJobTitle, targetCompany, language = 'en' } = payload;
+    const rawResumeText = payload.resumeText;
+    const rawJobDescription = payload.jobDescription;
 
-    if (!resumeText || !jobDescription) {
+    if (!rawResumeText || !rawJobDescription) {
       return {
         statusCode: 400,
         headers: { 'Content-Type': 'application/json' },
@@ -61,9 +63,8 @@ export const handler = async (
         })
       };
     }
-    
-    // Limits
-    if (resumeText.length > 50000 || jobDescription.length > 50000) {
+
+    if (rawResumeText.length > 50000 || rawJobDescription.length > 50000) {
       return {
         statusCode: 400,
         headers: { 'Content-Type': 'application/json' },
@@ -76,6 +77,10 @@ export const handler = async (
         })
       };
     }
+
+    // Sanitize non-printable control characters
+    const resumeText = rawResumeText.replace(/[\x00-\x08\x0B-\x1F\x7F\uFFFD]/g, '').trim();
+    const jobDescription = rawJobDescription.replace(/[\x00-\x08\x0B-\x1F\x7F\uFFFD]/g, '').trim();
 
     const startTime = Date.now();
     

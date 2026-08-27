@@ -110,11 +110,12 @@ export const am: TranslationDictionary = {
     noSkillsGap: 'ምንም የክህሎት ክፍተት አልተገኘም።',
   },
   breakdown: {
-    keywordMatch: 'የቁልፍ ቃላት ተዛምዶ',
+    roleCompatibility: 'የስራ መደብ ተዛምዶ',
+    requiredQualifications: 'አስፈላጊ መስፈርቶች',
     skillsMatch: 'የክህሎቶች ተዛምዶ',
     experienceRelevance: 'የልምድ አግባብነት',
-    formatting: 'የፋይል ቅርጸት',
-    impact: 'ተጽዕኖ እና ስኬቶች',
+    keywordMatch: 'የቁልፍ ቃላት ተዛምዶ',
+    resumeQuality: 'የሬዙሜ ጥራት',
   },
   scoreTiers: {
     strong: 'ከፍተኛ ተዛምዶ',

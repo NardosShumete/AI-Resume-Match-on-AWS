@@ -46,11 +46,12 @@ Requirements:
     const impactScore = calculateImpactScore(sampleResumeText);
 
     const breakdown = {
-      keywordMatch: keywordScore,
+      roleCompatibility: 80,
+      requiredQualifications: 90,
       skillsMatch: skillsScore,
       experienceRelevance: 80,
-      formatting: formattingScore,
-      impact: impactScore
+      keywordMatch: keywordScore,
+      resumeQuality: (formattingScore + impactScore) / 2
     };
 
     const overallScore = calculateAtsScore(breakdown);

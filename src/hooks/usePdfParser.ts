@@ -62,8 +62,17 @@ export const usePdfParser = () => {
 
       if (!extractedText || extractedText.length < 50) {
         setPdfState('error');
-        setPdfError("We couldn't extract readable text from this PDF. Your resume may be scanned/image-based. OCR support will be added in a future phase.");
+        setPdfError("This PDF appears to be scanned or image-based. Please upload a text-based PDF.");
         return;
+      }
+
+      if (import.meta.env.DEV) {
+        console.log('[PDF Diagnostics]', {
+          fileName: file.name,
+          fileSize: file.size,
+          pageCount,
+          extractedTextLength: extractedText.length
+        });
       }
 
       // 6. Calculate Metadata

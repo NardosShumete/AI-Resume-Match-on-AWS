@@ -173,10 +173,20 @@ export const useResumeStore = create<ResumeState>((set, get) => ({
   },
 
   analyzeResume: async () => {
-    const { pdfState, companyName, jobTitle, jobDescription, resumeMetadata, history } = get();
+    const { pdfState, pdfError, companyName, jobTitle, jobDescription, resumeMetadata, history } = get();
     
-    if (pdfState !== 'success' || !resumeMetadata || !companyName || !jobTitle || !jobDescription) {
-      set({ status: 'error', errorMessage: 'Please ensure your resume is successfully parsed and all required fields are filled.' });
+    if (pdfState === 'error' || pdfError) {
+      set({ status: 'error', errorMessage: pdfError || 'This PDF appears to be scanned or image-based. Please upload a text-based PDF.' });
+      return;
+    }
+
+    if (pdfState !== 'success' || !resumeMetadata || !resumeMetadata.extractedText) {
+      set({ status: 'error', errorMessage: 'Please upload a valid text-based PDF resume before running analysis.' });
+      return;
+    }
+
+    if (!companyName.trim() || !jobTitle.trim() || !jobDescription.trim()) {
+      set({ status: 'error', errorMessage: 'Please fill out Company Name, Target Role Title, and Job Description.' });
       return;
     }
 

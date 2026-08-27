@@ -13,12 +13,23 @@ export interface SkillMatch {
   importance: 'high' | 'medium' | 'low';
 }
 
+export interface RoleDomain {
+  candidate: string;
+  target: string;
+}
+
+export interface QualificationsList {
+  matched: string[];
+  missing: string[];
+}
+
 export interface ScoreBreakdown {
-  keywordMatch: number;
+  roleCompatibility: number;
+  requiredQualifications: number;
   skillsMatch: number;
   experienceRelevance: number;
-  formatting: number;
-  impact: number;
+  keywordMatch: number;
+  resumeQuality: number;
 }
 
 export interface AiRecommendation {
@@ -59,6 +70,11 @@ export interface AnalysisResult {
   
   matchedSkills: SkillMatch[];
   missingSkills: SkillMatch[];
+  
+  criticalMismatch?: boolean;
+  roleDomain?: RoleDomain;
+  requiredQualifications: QualificationsList;
+  preferredQualifications?: QualificationsList;
   
   recommendations: AiRecommendation[];
   bulletRewrites: BulletRewrite[];

@@ -3,19 +3,21 @@ import type { ScoreBreakdown } from '../../types/analysis';
 export function calculateAtsScore(breakdown: ScoreBreakdown): number {
   // Weights (must sum to 1.0)
   const weights = {
-    keywordMatch: 0.30,
-    skillsMatch: 0.25,
-    experienceRelevance: 0.20,
-    formatting: 0.15,
-    impact: 0.10
+    roleCompatibility: 0.25,
+    requiredQualifications: 0.25,
+    skillsMatch: 0.15,
+    experienceRelevance: 0.15,
+    keywordMatch: 0.10,
+    resumeQuality: 0.10
   };
 
   const finalScore = 
-    (breakdown.keywordMatch * weights.keywordMatch) +
+    (breakdown.roleCompatibility * weights.roleCompatibility) +
+    (breakdown.requiredQualifications * weights.requiredQualifications) +
     (breakdown.skillsMatch * weights.skillsMatch) +
     (breakdown.experienceRelevance * weights.experienceRelevance) +
-    (breakdown.formatting * weights.formatting) +
-    (breakdown.impact * weights.impact);
+    (breakdown.keywordMatch * weights.keywordMatch) +
+    (breakdown.resumeQuality * weights.resumeQuality);
     
   return Math.round(finalScore);
 }

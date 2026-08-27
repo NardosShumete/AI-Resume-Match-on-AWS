@@ -8,6 +8,16 @@ vi.mock('../src/services/gemini', () => ({
     recommendations: [{ issue: 'Add metrics', section: 'Experience', priority: 'high', recommendation: 'Quantify impact' }],
     bulletRewrites: [],
     skillsGap: []
+  }),
+  analyzeAtsSemantics: vi.fn().mockResolvedValue({
+    roleDomain: { candidate: 'IT', target: 'IT' },
+    roleCompatibilityScore: 85,
+    experienceRelevanceScore: 80,
+    requiredQualifications: { matched: ['Degree'], missing: [] },
+    preferredQualifications: { matched: [], missing: [] },
+    isRegulatedRole: false,
+    missingCriticalCredential: false,
+    skills: { matched: ['React'], missing: [] }
   })
 }));
 

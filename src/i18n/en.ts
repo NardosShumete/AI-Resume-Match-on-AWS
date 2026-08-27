@@ -110,11 +110,12 @@ export const en: TranslationDictionary = {
     noSkillsGap: 'No skill gaps detected.',
   },
   breakdown: {
-    keywordMatch: 'Keyword Match',
+    roleCompatibility: 'Role Compatibility',
+    requiredQualifications: 'Required Qualifications',
     skillsMatch: 'Skills Match',
     experienceRelevance: 'Experience Relevance',
-    formatting: 'Formatting & Layout',
-    impact: 'Impact & Metrics',
+    keywordMatch: 'Keyword Match',
+    resumeQuality: 'Resume Quality',
   },
   scoreTiers: {
     strong: 'Strong Match',

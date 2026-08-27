@@ -11,11 +11,12 @@ export const ScoreBreakdown: React.FC<ScoreBreakdownProps> = ({ categories }) =>
   const { t } = useLanguageStore();
 
   const metrics = [
-    { label: t.breakdown.keywordMatch, val: categories.keywordMatch, color: 'bg-emerald-500' },
+    { label: t.breakdown.roleCompatibility, val: categories.roleCompatibility, color: 'bg-emerald-500' },
+    { label: t.breakdown.requiredQualifications, val: categories.requiredQualifications, color: 'bg-teal-500' },
     { label: t.breakdown.skillsMatch, val: categories.skillsMatch, color: 'bg-indigo-500' },
     { label: t.breakdown.experienceRelevance, val: categories.experienceRelevance, color: 'bg-cyan-500' },
-    { label: t.breakdown.formatting, val: categories.formatting, color: 'bg-violet-500' },
-    { label: t.breakdown.impact, val: categories.impact, color: 'bg-amber-500' },
+    { label: t.breakdown.keywordMatch, val: categories.keywordMatch, color: 'bg-violet-500' },
+    { label: t.breakdown.resumeQuality, val: categories.resumeQuality, color: 'bg-amber-500' },
   ];
 
   return (
