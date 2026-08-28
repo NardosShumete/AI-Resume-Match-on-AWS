@@ -4,36 +4,43 @@ import type { AiRecommendation, BulletRewrite, SkillsGap } from '../../types/ana
 import { useLanguageStore } from '../../i18n/useLanguageStore';
 
 interface FeedbackAccordionProps {
-  recommendations: AiRecommendation[];
-  bulletRewrites: BulletRewrite[];
-  skillsGap: SkillsGap[];
+  recommendations?: AiRecommendation[];
+  bulletRewrites?: BulletRewrite[];
+  skillsGap?: SkillsGap[];
 }
 
 export const FeedbackAccordion: React.FC<FeedbackAccordionProps> = ({ 
-  recommendations, 
-  bulletRewrites, 
-  skillsGap 
+  recommendations = [], 
+  bulletRewrites = [], 
+  skillsGap = [] 
 }) => {
   const { t } = useLanguageStore();
   const [openItems, setOpenItems] = useState<Record<string, boolean>>({
-    'Experience Improvements': true,
-    'Formatting & Tone': true,
-    'Skills Gap Analysis': true,
+    rewrites: true,
+    recommendations: true,
+    skillsGap: true,
   });
 
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
-  const toggle = (category: string) => {
-    setOpenItems((prev) => ({ ...prev, [category]: !prev[category] }));
+  const safeRecommendations = Array.isArray(recommendations) ? recommendations : [];
+  const safeRewrites = Array.isArray(bulletRewrites) ? bulletRewrites : [];
+  const safeSkillsGap = Array.isArray(skillsGap) ? skillsGap : [];
+
+  const toggle = (categoryKey: string) => {
+    setOpenItems((prev) => ({ ...prev, [categoryKey]: !prev[categoryKey] }));
   };
 
   const handleCopy = (id: string, text: string) => {
-    navigator.clipboard?.writeText(text);
-    setCopiedId(id);
-    setTimeout(() => setCopiedId(null), 2000);
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(text);
+      setCopiedId(id);
+      setTimeout(() => setCopiedId(null), 2000);
+    }
   };
 
   const renderAccordionItem = (
+    key: string,
     title: string, 
     itemsCount: number, 
     icon: React.ReactNode, 
@@ -42,13 +49,14 @@ export const FeedbackAccordion: React.FC<FeedbackAccordionProps> = ({
     children: React.ReactNode
   ) => {
     if (itemsCount === 0) return null;
-    const isOpen = openItems[title] ?? false;
+    const isOpen = openItems[key] ?? true;
 
     return (
       <div className="linear-card rounded-2xl overflow-hidden border border-zinc-200/80 dark:border-zinc-800 transition-all">
         {/* Header Button */}
         <button
-          onClick={() => toggle(title)}
+          type="button"
+          onClick={() => toggle(key)}
           className="w-full px-5 py-4 flex items-center justify-between hover:bg-zinc-50 dark:hover:bg-zinc-900/60 transition-colors text-left"
         >
           <div className="flex items-center gap-3">
@@ -57,7 +65,7 @@ export const FeedbackAccordion: React.FC<FeedbackAccordionProps> = ({
             </div>
             <div>
               <h3 className="text-sm font-bold text-foreground">{title}</h3>
-              <span className="text-[11px] text-muted-foreground">{itemsCount} items</span>
+              <span className="text-[11px] text-muted-foreground">{itemsCount} {itemsCount === 1 ? 'item' : 'items'}</span>
             </div>
           </div>
 
@@ -83,25 +91,28 @@ export const FeedbackAccordion: React.FC<FeedbackAccordionProps> = ({
     );
   };
 
+  const totalFeedbackItems = safeRecommendations.length + safeRewrites.length + safeSkillsGap.length;
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between pb-2">
         <div>
           <h2 className="text-lg font-bold text-foreground">{t.results.aiFeedbackTitle}</h2>
         </div>
-        <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-500/10 px-2.5 py-1 rounded-md border border-indigo-500/20">
-          {recommendations.length + bulletRewrites.length + skillsGap.length}
+        <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-500/10 px-2.5 py-1 rounded-md border border-indigo-500/20 tabular-nums">
+          {totalFeedbackItems}
         </span>
       </div>
 
       {/* Bullet Rewrites */}
       {renderAccordionItem(
+        'rewrites',
         t.results.bulletRewritesTab,
-        bulletRewrites.length,
+        safeRewrites.length,
         <TrendingUp className="w-4 h-4" />,
         'text-indigo-500',
         t.results.high,
-        bulletRewrites.map((item, idx) => {
+        safeRewrites.map((item, idx) => {
           const id = `br-${idx}`;
           return (
             <div key={id} className="p-4 rounded-xl bg-zinc-50/70 dark:bg-zinc-900/40 border border-zinc-200/60 dark:border-zinc-800/60 space-y-3">
@@ -127,6 +138,7 @@ export const FeedbackAccordion: React.FC<FeedbackAccordionProps> = ({
                   </div>
                 </div>
                 <button
+                  type="button"
                   onClick={() => handleCopy(id, item.improved)}
                   className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-white dark:hover:bg-zinc-800 transition-colors flex-shrink-0"
                   title="Copy"
@@ -141,12 +153,13 @@ export const FeedbackAccordion: React.FC<FeedbackAccordionProps> = ({
 
       {/* Formatting & General Recommendations */}
       {renderAccordionItem(
+        'recommendations',
         t.results.recommendationsTab,
-        recommendations.length,
+        safeRecommendations.length,
         <FileEdit className="w-4 h-4" />,
         'text-violet-500',
         t.results.recommendation,
-        recommendations.map((item, idx) => {
+        safeRecommendations.map((item, idx) => {
           const id = `rec-${idx}`;
           return (
             <div key={id} className="p-4 rounded-xl bg-zinc-50/70 dark:bg-zinc-900/40 border border-zinc-200/60 dark:border-zinc-800/60 space-y-3">
@@ -176,12 +189,13 @@ export const FeedbackAccordion: React.FC<FeedbackAccordionProps> = ({
 
       {/* Skills Gap Analysis */}
       {renderAccordionItem(
+        'skillsGap',
         t.results.skillsGapTab,
-        skillsGap.length,
+        safeSkillsGap.length,
         <User className="w-4 h-4" />,
         'text-cyan-500',
         t.results.skill,
-        skillsGap.map((item, idx) => {
+        safeSkillsGap.map((item, idx) => {
           const id = `sg-${idx}`;
           return (
             <div key={id} className="p-4 rounded-xl bg-zinc-50/70 dark:bg-zinc-900/40 border border-zinc-200/60 dark:border-zinc-800/60 space-y-3">
@@ -208,6 +222,13 @@ export const FeedbackAccordion: React.FC<FeedbackAccordionProps> = ({
           );
         })
       )}
+
+      {totalFeedbackItems === 0 && (
+        <div className="linear-card rounded-2xl p-6 text-center border border-zinc-200/80 dark:border-zinc-800">
+          <p className="text-xs text-muted-foreground">{t.results.noRecommendations}</p>
+        </div>
+      )}
     </div>
   );
 };
+

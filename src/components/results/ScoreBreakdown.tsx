@@ -2,6 +2,7 @@ import React from 'react';
 import { Layers } from 'lucide-react';
 import type { ScoreBreakdown as BreakdownType } from '../../types/analysis';
 import { useLanguageStore } from '../../i18n/useLanguageStore';
+import { formatScore, getScoreProgress } from '../../utils/scoreFormatter';
 
 interface ScoreBreakdownProps {
   categories: BreakdownType;
@@ -11,12 +12,12 @@ export const ScoreBreakdown: React.FC<ScoreBreakdownProps> = ({ categories }) =>
   const { t } = useLanguageStore();
 
   const metrics = [
-    { label: t.breakdown.roleCompatibility, val: categories.roleCompatibility, color: 'bg-emerald-500' },
-    { label: t.breakdown.requiredQualifications, val: categories.requiredQualifications, color: 'bg-teal-500' },
-    { label: t.breakdown.skillsMatch, val: categories.skillsMatch, color: 'bg-indigo-500' },
-    { label: t.breakdown.experienceRelevance, val: categories.experienceRelevance, color: 'bg-cyan-500' },
-    { label: t.breakdown.keywordMatch, val: categories.keywordMatch, color: 'bg-violet-500' },
-    { label: t.breakdown.resumeQuality, val: categories.resumeQuality, color: 'bg-amber-500' },
+    { label: t.breakdown.roleCompatibility, val: categories?.roleCompatibility, color: 'bg-emerald-500' },
+    { label: t.breakdown.requiredQualifications, val: categories?.requiredQualifications, color: 'bg-teal-500' },
+    { label: t.breakdown.skillsMatch, val: categories?.skillsMatch, color: 'bg-indigo-500' },
+    { label: t.breakdown.experienceRelevance, val: categories?.experienceRelevance, color: 'bg-cyan-500' },
+    { label: t.breakdown.keywordMatch, val: categories?.keywordMatch, color: 'bg-violet-500' },
+    { label: t.breakdown.resumeQuality, val: categories?.resumeQuality, color: 'bg-amber-500' },
   ];
 
   return (
@@ -26,25 +27,31 @@ export const ScoreBreakdown: React.FC<ScoreBreakdownProps> = ({ categories }) =>
           <Layers className="w-4 h-4 text-indigo-500" />
           {t.results.matchBreakdown}
         </h3>
-        <span className="text-xs text-muted-foreground font-semibold">5 / 5</span>
+        <span className="text-xs text-muted-foreground font-semibold">6 Dimensions</span>
       </div>
 
       <div className="space-y-3.5">
-        {metrics.map((item) => (
-          <div key={item.label} className="space-y-1.5">
-            <div className="flex items-center justify-between text-xs">
-              <span className="font-semibold text-foreground">{item.label}</span>
-              <span className="font-bold text-foreground tabular-nums">{item.val}%</span>
+        {metrics.map((item) => {
+          const formatted = formatScore(item.val);
+          const progress = getScoreProgress(item.val);
+          return (
+            <div key={item.label} className="space-y-1.5">
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-semibold text-foreground">{item.label}</span>
+                <span className="font-bold text-foreground tabular-nums">{formatted}</span>
+              </div>
+              <div className="h-2 w-full bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
+                <div
+                  className={`h-full ${item.color} rounded-full transition-all duration-1000 ease-out`}
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
             </div>
-            <div className="h-2 w-full bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
-              <div
-                className={`h-full ${item.color} rounded-full transition-all duration-1000 ease-out`}
-                style={{ width: `${item.val}%` }}
-              />
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
 };
+
+

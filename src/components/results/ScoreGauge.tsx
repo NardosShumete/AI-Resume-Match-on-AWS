@@ -1,28 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import { Trophy } from 'lucide-react';
 import { useLanguageStore } from '../../i18n/useLanguageStore';
+import { formatScore, formatScoreNumber } from '../../utils/scoreFormatter';
 
 interface ScoreGaugeProps {
   score: number;
 }
 
 export const ScoreGauge: React.FC<ScoreGaugeProps> = ({ score }) => {
+  const safeScore = formatScoreNumber(score);
   const [animatedScore, setAnimatedScore] = useState(0);
   const { t } = useLanguageStore();
 
   useEffect(() => {
-    const timer = setTimeout(() => setAnimatedScore(score), 100);
+    const timer = setTimeout(() => setAnimatedScore(safeScore), 100);
     return () => clearTimeout(timer);
-  }, [score]);
+  }, [safeScore]);
 
   const radius = 64;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (animatedScore / 100) * circumference;
 
-  const isExcellent = score >= 85;
-  const isGood = score >= 70;
+  const isExcellent = safeScore >= 85;
+  const isGood = safeScore >= 70;
 
   const tierText = isExcellent ? t.scoreTiers.strong : isGood ? t.scoreTiers.good : t.scoreTiers.needsImprovement;
+  const badgeStyle = isExcellent 
+    ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border-emerald-500/20' 
+    : isGood 
+      ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-500/10 border-indigo-500/20' 
+      : 'text-amber-600 dark:text-amber-400 bg-amber-500/10 border-amber-500/20';
 
   return (
     <div className="linear-card rounded-2xl p-6 border border-zinc-200/80 dark:border-zinc-800 flex flex-col items-center text-center relative overflow-hidden">
@@ -34,7 +41,7 @@ export const ScoreGauge: React.FC<ScoreGaugeProps> = ({ score }) => {
         <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
           {t.results.overallMatch}
         </span>
-        <span className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20">
+        <span className={`flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-md border ${badgeStyle}`}>
           <Trophy className="w-3 h-3" /> {tierText}
         </span>
       </div>
@@ -77,7 +84,7 @@ export const ScoreGauge: React.FC<ScoreGaugeProps> = ({ score }) => {
         {/* Center Content */}
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
           <span className="text-4xl font-extrabold tracking-tight text-foreground tabular-nums">
-            {animatedScore}%
+            {formatScore(animatedScore)}
           </span>
           <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-0.5">
             {t.resumeCard.atsScore}
@@ -91,10 +98,11 @@ export const ScoreGauge: React.FC<ScoreGaugeProps> = ({ score }) => {
           {tierText}
         </p>
         <p className="text-xs text-muted-foreground leading-relaxed">
-          {t.results.overallMatch}: {animatedScore}%
+          {t.results.overallMatch}: {formatScore(animatedScore)}
         </p>
       </div>
 
     </div>
   );
 };
+

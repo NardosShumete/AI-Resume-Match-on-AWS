@@ -8,6 +8,8 @@ import { ScoreBreakdown } from '../components/results/ScoreBreakdown';
 import { KeywordSection } from '../components/results/KeywordSection';
 import { FeedbackAccordion } from '../components/results/FeedbackAccordion';
 
+import { RequirementsSection } from '../components/results/RequirementsSection';
+
 const Results: React.FC = () => {
   const navigate = useNavigate();
   const { analysisResults, reset } = useResumeStore();
@@ -76,6 +78,23 @@ const Results: React.FC = () => {
         </div>
       </div>
 
+      {/* Critical Domain Mismatch Callout */}
+      {analysisResults.criticalMismatch && (
+        <div className="rounded-2xl p-4 sm:p-5 bg-rose-500/10 border border-rose-500/30 flex items-start gap-3.5 text-rose-700 dark:text-rose-300">
+          <div className="w-8 h-8 rounded-xl bg-rose-500/20 text-rose-600 dark:text-rose-400 flex items-center justify-center flex-shrink-0 font-bold text-sm">
+            !
+          </div>
+          <div className="space-y-1 text-xs">
+            <p className="font-bold text-sm text-rose-600 dark:text-rose-400">
+              Fundamental Role & Domain Mismatch Detected
+            </p>
+            <p className="leading-relaxed opacity-90">
+              Candidate domain ({analysisResults.roleDomain?.candidate || 'Different Field'}) does not match the target job domain ({analysisResults.roleDomain?.target || 'Target Role'}). Critical domain-specific credentials, licenses, or required clinical/technical qualifications are missing.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Main Results Grid */}
       <div className="grid lg:grid-cols-12 gap-6">
 
@@ -89,8 +108,9 @@ const Results: React.FC = () => {
           />
         </div>
 
-        {/* Right Column (7 cols): Feedback Accordions */}
+        {/* Right Column (7 cols): Requirements Provenance & Feedback Accordions */}
         <div className="lg:col-span-7 space-y-6">
+          <RequirementsSection requirementsBreakdown={analysisResults.requirementsBreakdown} />
           <FeedbackAccordion 
             recommendations={analysisResults.recommendations}
             bulletRewrites={analysisResults.bulletRewrites}

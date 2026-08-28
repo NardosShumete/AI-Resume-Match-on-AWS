@@ -1,13 +1,12 @@
 import type { SkillMatch } from '../../types/analysis';
 
 export function calculateSkillsScore(matched: SkillMatch[], missing: SkillMatch[]): number {
-  if (matched.length === 0 && missing.length === 0) return 100;
+  if (!matched || !missing) return 0;
+  if (matched.length === 0 && missing.length === 0) return 0;
+  if (matched.length === 0 && missing.length > 0) return 0;
 
-  // For this simplified version, skills are treated similarly to keywords,
-  // but we can weigh high-priority skills more heavily here if desired.
-  
   const weights = {
-    high: 5, // Penalize high priority skill misses heavily
+    high: 5,
     medium: 2,
     low: 1
   };
@@ -16,15 +15,18 @@ export function calculateSkillsScore(matched: SkillMatch[], missing: SkillMatch[
   let total = 0;
 
   for (const m of matched) {
-    earned += weights[m.importance];
-    total += weights[m.importance];
+    const w = weights[m.importance] || 2;
+    earned += w;
+    total += w;
   }
 
   for (const m of missing) {
-    total += weights[m.importance];
+    const w = weights[m.importance] || 2;
+    total += w;
   }
 
-  if (total === 0) return 100;
+  if (total === 0) return 0;
 
   return Math.round((earned / total) * 100);
 }
+

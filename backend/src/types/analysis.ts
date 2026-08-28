@@ -1,3 +1,26 @@
+export type RequirementSource = 'explicit' | 'role-implied';
+export type RequirementStatus = 'matched' | 'missing' | 'unverified';
+
+export interface RequirementItem {
+  requirement: string;
+  source: RequirementSource;
+  status: RequirementStatus;
+  explanation: string;
+}
+
+export interface RequirementsCategory {
+  matched: RequirementItem[];
+  missing: RequirementItem[];
+  unverified: RequirementItem[];
+  score: number; // 0-100 integer
+}
+
+export interface RequirementsBreakdown {
+  explicit: RequirementsCategory;
+  roleImplied: RequirementsCategory;
+  overallScore: number; // 0-100 integer
+}
+
 export interface KeywordMatch {
   keyword: string;
   importance: 'high' | 'medium' | 'low';
@@ -24,12 +47,12 @@ export interface QualificationsList {
 }
 
 export interface ScoreBreakdown {
-  roleCompatibility: number;
-  requiredQualifications: number;
-  skillsMatch: number;
-  experienceRelevance: number;
-  keywordMatch: number;
-  resumeQuality: number;
+  roleCompatibility: number;      // 0-100 integer (25% weight)
+  requiredQualifications: number; // 0-100 integer (25% weight)
+  skillsMatch: number;            // 0-100 integer (15% weight)
+  experienceRelevance: number;    // 0-100 integer (15% weight)
+  keywordMatch: number;           // 0-100 integer (10% weight)
+  resumeQuality: number;          // 0-100 integer (10% weight)
 }
 
 export interface AiRecommendation {
@@ -60,7 +83,7 @@ export interface AnalysisResult {
   companyName: string;
   date: string;
   
-  atsScore: number;
+  atsScore: number;               // 0-100 integer
   status: AnalysisStatus;
   
   scoreBreakdown: ScoreBreakdown;
@@ -71,8 +94,10 @@ export interface AnalysisResult {
   matchedSkills: SkillMatch[];
   missingSkills: SkillMatch[];
   
-  criticalMismatch?: boolean;
-  roleDomain?: RoleDomain;
+  criticalMismatch: boolean;
+  roleDomain: RoleDomain;
+  
+  requirementsBreakdown: RequirementsBreakdown;
   requiredQualifications: QualificationsList;
   preferredQualifications?: QualificationsList;
   
@@ -83,3 +108,4 @@ export interface AnalysisResult {
   
   summary: string;
 }
+
