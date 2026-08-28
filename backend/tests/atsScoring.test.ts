@@ -92,15 +92,20 @@ describe('ATS Scoring Engine & Data Integrity Test Matrix (10 Scenarios)', () =>
 
   // Helper to mock the gemini service directly for engine tests
   const mockGemini = (semanticRes: Partial<geminiService.AtsSemanticResponse>) => {
+    const matchedReqs = semanticRes.requiredQualifications?.matched ?? ['Bachelor in Computer Science', '4+ years full-stack experience'];
+    const missingReqs = semanticRes.requiredQualifications?.missing ?? [];
+    
+    const generatedRequirements = semanticRes.requirements ?? [
+      ...matchedReqs.map(r => ({ requirement: r, source: 'explicit' as const, status: 'matched' as const, explanation: 'Verified in resume.' })),
+      ...missingReqs.map(r => ({ requirement: r, source: 'explicit' as const, status: 'missing' as const, explanation: 'Missing or unverified in resume.' }))
+    ];
+
     vi.spyOn(geminiService, 'analyzeAtsSemantics').mockResolvedValue({
       roleDomain: { candidate: 'Software Engineering', target: 'Software Engineering' },
       roleCompatibilityScore: 90,
       experienceRelevanceScore: 85,
-      requirements: [
-        { requirement: 'Bachelor in Computer Science', source: 'explicit', status: 'matched', explanation: 'Verified in resume' },
-        { requirement: '4+ years full-stack experience', source: 'explicit', status: 'matched', explanation: 'Verified in resume' }
-      ],
-      requiredQualifications: { matched: ['Bachelor in Computer Science', '4+ years full-stack experience'], missing: [] },
+      requirements: generatedRequirements,
+      requiredQualifications: { matched: matchedReqs, missing: missingReqs },
       preferredQualifications: { matched: [], missing: [] },
       isRegulatedRole: false,
       missingCriticalCredential: false,
