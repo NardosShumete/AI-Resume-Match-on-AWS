@@ -31,7 +31,30 @@ export const mockAnalyses: AnalysisResult[] = [
       { keyword: 'Kubernetes', importance: 'low' },
       { keyword: 'CI/CD', importance: 'medium' }
     ],
+    criticalMismatch: false,
     roleDomain: { candidate: 'Software Engineering', target: 'Software Engineering' },
+    requirementsBreakdown: {
+      explicit: {
+        matched: [
+          { requirement: 'Bachelor\'s Degree in CS', source: 'explicit', status: 'matched', explanation: 'Verified in Education' },
+          { requirement: '3+ years experience with React', source: 'explicit', status: 'matched', explanation: 'Verified in Experience' }
+        ],
+        missing: [
+          { requirement: 'Experience with AWS', source: 'explicit', status: 'missing', explanation: 'No AWS experience found in resume' }
+        ],
+        unverified: [],
+        score: 67
+      },
+      roleImplied: {
+        matched: [
+          { requirement: 'Core Web Development Fundamentals', source: 'role-implied', status: 'matched', explanation: 'Demonstrated in work history' }
+        ],
+        missing: [],
+        unverified: [],
+        score: 100
+      },
+      overallScore: 80
+    },
     requiredQualifications: {
       matched: ['Bachelor\'s Degree in Computer Science or related field', '3+ years experience with React'],
       missing: ['Experience with AWS']
