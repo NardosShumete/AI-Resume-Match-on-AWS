@@ -24,9 +24,9 @@ describe('Pure Deterministic ATS Scoring Function Unit Tests (No LLM / No Networ
       resumeQuality: 90
     });
 
-    // 95*0.25 + 90*0.25 + 85*0.15 + 90*0.15 + 80*0.10 + 90*0.10
-    // = 23.75 + 22.5 + 12.75 + 13.5 + 8.0 + 9.0 = 89.5 => 90
-    expect(res.atsScore).toBe(90);
+    // 95*0.25 + 90*0.20 + 85*0.20 + 90*0.20 + 80*0.10 + 90*0.05
+    // = 23.75 + 18 + 17 + 18 + 8 + 4.5 = 89.25 => 89
+    expect(res.atsScore).toBe(89);
     expect(res.criticalMismatch).toBe(false);
     expect(res.scoreBreakdown.roleCompatibility).toBe(95);
   });

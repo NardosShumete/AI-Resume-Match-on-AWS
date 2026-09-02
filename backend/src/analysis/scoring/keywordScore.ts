@@ -2,8 +2,10 @@ import type { KeywordMatch, MissingKeyword } from '../../types/analysis';
 
 export function calculateKeywordScore(matched: KeywordMatch[], missing: MissingKeyword[]): number {
   if (!matched || !missing) return 0;
-  if (matched.length === 0 && missing.length === 0) return 0;
-  if (matched.length === 0 && missing.length > 0) return 0;
+  if (matched.length === 0 && missing.length === 0) return 0; // Or a baseline? If JD had no keywords extracted, we can't evaluate.
+  // If matched has items but missing is empty, it could mean the JD only had generic keywords that were matched.
+  // We should still calculate normally, but if the total weight is very low (e.g. only 1 generic keyword matched),
+  // we might want to cap it. But for now, let's just let the normal math handle it.
 
   let score = 0;
   let totalWeight = 0;

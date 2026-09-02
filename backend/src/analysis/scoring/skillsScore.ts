@@ -3,7 +3,7 @@ import type { SkillMatch } from '../../types/analysis';
 export function calculateSkillsScore(matched: SkillMatch[], missing: SkillMatch[]): number {
   if (!matched || !missing) return 0;
   if (matched.length === 0 && missing.length === 0) return 0;
-  if (matched.length === 0 && missing.length > 0) return 0;
+  // Let normal math handle the rest to avoid giving arbitrary 0 or 100 on empty arrays without weighing.
 
   const weights = {
     high: 5,

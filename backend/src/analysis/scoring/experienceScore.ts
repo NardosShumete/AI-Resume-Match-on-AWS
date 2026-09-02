@@ -55,15 +55,17 @@ export function calculateExperienceScore(
     score += 10;
   }
   
-  // Experience length proxy
-  if (jd.yearsOfExperienceRequired) {
-    if (lowerExp.length > jd.yearsOfExperienceRequired * 200) {
-      score += 25;
+  // Experience length proxy - only if there's domain overlap
+  if (hasDomainOverlap || roleKeywords.length === 0) {
+    if (jd.yearsOfExperienceRequired) {
+      if (lowerExp.length > jd.yearsOfExperienceRequired * 200) {
+        score += 25;
+      } else {
+        score += 10;
+      }
     } else {
-      score += 10;
+      score += 25;
     }
-  } else {
-    score += 25;
   }
 
   return Math.min(100, Math.max(0, score));

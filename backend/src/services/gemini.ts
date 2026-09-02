@@ -58,7 +58,7 @@ const ATS_SEMANTICS_SCHEMA = {
         properties: {
           requirement: { type: 'STRING' },
           source: { type: 'STRING', enum: ['explicit', 'role-implied'] },
-          status: { type: 'STRING', enum: ['matched', 'missing', 'unverified'] },
+          status: { type: 'STRING', enum: ['matched', 'missing', 'unknown', 'partial', 'conflicting'] },
           explanation: { type: 'STRING' }
         },
         required: ['requirement', 'source', 'status', 'explanation']
@@ -177,10 +177,10 @@ Evaluate the fundamental occupational and qualification compatibility between th
 ${isRetry ? 'IMPORTANT SCHEMA CORRECTION: Ensure all scores are integers 0-100. Enforce strict JSON matching the requested schema.' : ''}
 
 CRITICAL EVALUATION RULES:
-1. DOMAIN & ROLE COMPATIBILITY:
+1. DOMAIN & ROLE COMPATIBILITY (EXTREMELY IMPORTANT):
    - Identify candidate's core domain (e.g. 'Software Engineering', 'Healthcare / Nursing', 'Cybersecurity', 'Finance').
    - Identify target job domain.
-   - If fundamentally unrelated (e.g. Software Engineer applying for Pediatric Nurse or Doctor), roleCompatibilityScore MUST be very low (0 - 15).
+   - If fundamentally unrelated (e.g. Software Engineer applying for Pediatric Nurse or Doctor), roleCompatibilityScore MUST be 0-10. Do not allow generic overlaps (like "experience") to rescue the score.
 
 2. REGULATED & LICENSED ROLES:
    - Identify if target role is a regulated profession (e.g. Registered Nurse, Physician, Lawyer).
@@ -191,18 +191,18 @@ CRITICAL EVALUATION RULES:
    - Categorize each requirement with its provenance "source":
      * "explicit": Stated in the job description text (e.g. "1 year hospital experience", "GPA above 3.5").
      * "role-implied": Standard for this job title/domain (e.g. "Nursing License / BSN Degree for Pediatric Nurse").
-   - Categorize status as "matched" | "missing" | "unverified".
-   - For GPA:
-     * Resume GPA >= 3.5 -> status: "matched", source: "explicit".
-     * Resume GPA < 3.5 -> status: "missing", source: "explicit".
-     * Resume does not state GPA -> status: "missing", source: "explicit", explanation: "Your resume does not state a GPA, so the required GPA > 3.5 cannot be verified."
-     * NEVER hallucinate school names into requirements (e.g. never say "UC Berkeley GPA").
+   - Categorize status as "matched" | "missing" | "unknown" | "partial" | "conflicting".
+   - Distinguish missing from unknown:
+     * If Job requires GPA >= 3.5 and Resume does not state GPA -> status: "unknown", explanation: "Your resume does not state a GPA, so the required GPA > 3.5 cannot be verified." (NEVER "missing" or "failed").
+     * If Job requires 1 year hospital experience and Resume only has 5 years software engineering -> status: "missing" or "conflicting", because the domains conflict.
+   - NEVER hallucinate qualifications, school names, or credentials into requirements.
 
 4. EXPERIENCE RELEVANCE:
-   - Score experienceRelevanceScore (0-100) based on RELEVANT experience in the target domain.
+   - Score experienceRelevanceScore (0-100) based ONLY on RELEVANT experience in the target domain. Unrelated experience (e.g. 5 years in Software for a Nursing role) counts as 0 relevance.
 
 5. TARGET JOB SKILLS:
    - List which target job skills candidate possesses (matched) vs lacks (missing).
+   - ONLY include skills that are relevant to the target job. Do not count generic terms like "communication", "management", or unrelated tech skills (e.g., React for a Nursing job) as matched skills.
 
 Resume:
 ${resumeText.substring(0, 4000)}
@@ -266,7 +266,7 @@ function normalizeSemanticResponse(parsed: any): AtsSemanticResponse {
     ? parsed.requirements.map((r: any) => ({
         requirement: String(r.requirement || ''),
         source: r.source === 'role-implied' ? 'role-implied' : 'explicit',
-        status: r.status === 'matched' ? 'matched' : r.status === 'unverified' ? 'unverified' : 'missing',
+        status: ['matched', 'missing', 'unknown', 'partial', 'conflicting'].includes(r.status) ? r.status : 'unknown',
         explanation: String(r.explanation || '')
       }))
     : [];
@@ -378,6 +378,7 @@ CRITICAL ANTI-HALLUCINATION RULES:
 3. GPA & REQUIREMENTS:
    - If the job requires a GPA and the resume does not state one, recommend: "Your resume does not state a GPA, so the required GPA cannot be verified. Add your cumulative GPA if it meets the requirement."
    - Do NOT attribute requirements to specific universities unless explicitly stated in the job description.
+   - Do NOT tell them to highlight experience they don't have. If a job requires pediatric experience, say "The job requires pediatric ward experience, but no pediatric clinical experience was found."
 `;
 
   try {

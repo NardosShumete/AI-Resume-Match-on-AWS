@@ -34,33 +34,38 @@ export const RequirementsSection: React.FC<RequirementsSectionProps> = ({ requir
             {items.map((item, idx) => {
               const isMatched = item.status === 'matched';
               const isMissing = item.status === 'missing';
-              const isUnverified = item.status === 'unverified';
+              const isUnknown = item.status === 'unknown';
+              const isPartial = item.status === 'partial';
+              const isConflicting = item.status === 'conflicting';
+
+              let bgClass = 'bg-amber-500/5 border-amber-500/20 text-foreground';
+              if (isMatched) bgClass = 'bg-emerald-500/5 border-emerald-500/20 text-foreground';
+              else if (isMissing || isConflicting) bgClass = 'bg-rose-500/5 border-rose-500/20 text-foreground';
+              else if (isUnknown) bgClass = 'bg-zinc-500/5 border-zinc-500/20 text-foreground';
+              else if (isPartial) bgClass = 'bg-blue-500/5 border-blue-500/20 text-foreground';
 
               return (
                 <div
                   key={`${item.requirement}-${idx}`}
-                  className={`p-3 rounded-xl border text-xs space-y-1 transition-all ${
-                    isMatched
-                      ? 'bg-emerald-500/5 border-emerald-500/20 text-foreground'
-                      : isMissing
-                      ? 'bg-rose-500/5 border-rose-500/20 text-foreground'
-                      : 'bg-amber-500/5 border-amber-500/20 text-foreground'
-                  }`}
+                  className={`p-3 rounded-xl border text-xs space-y-1 transition-all ${bgClass}`}
                 >
                   <div className="flex items-start justify-between gap-2">
                     <span className="font-semibold flex items-center gap-1.5">
                       {isMatched && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />}
-                      {isMissing && <XCircle className="w-3.5 h-3.5 text-rose-500 flex-shrink-0" />}
-                      {isUnverified && <HelpCircle className="w-3.5 h-3.5 text-amber-500 flex-shrink-0" />}
+                      {(isMissing || isConflicting) && <XCircle className="w-3.5 h-3.5 text-rose-500 flex-shrink-0" />}
+                      {isUnknown && <HelpCircle className="w-3.5 h-3.5 text-zinc-500 flex-shrink-0" />}
+                      {isPartial && <ShieldCheck className="w-3.5 h-3.5 text-blue-500 flex-shrink-0" />}
                       {item.requirement}
                     </span>
                     <span
                       className={`text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded ${
                         isMatched
                           ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
-                          : isMissing
+                          : (isMissing || isConflicting)
                           ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400'
-                          : 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
+                          : isUnknown
+                          ? 'bg-zinc-500/10 text-zinc-600 dark:text-zinc-400'
+                          : 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
                       }`}
                     >
                       {item.status}
@@ -84,14 +89,18 @@ export const RequirementsSection: React.FC<RequirementsSectionProps> = ({ requir
 
   const explicitItems = [
     ...(requirementsBreakdown.explicit?.matched || []),
+    ...(requirementsBreakdown.explicit?.partial || []),
     ...(requirementsBreakdown.explicit?.missing || []),
-    ...(requirementsBreakdown.explicit?.unverified || [])
+    ...(requirementsBreakdown.explicit?.conflicting || []),
+    ...(requirementsBreakdown.explicit?.unknown || [])
   ];
 
   const roleImpliedItems = [
     ...(requirementsBreakdown.roleImplied?.matched || []),
+    ...(requirementsBreakdown.roleImplied?.partial || []),
     ...(requirementsBreakdown.roleImplied?.missing || []),
-    ...(requirementsBreakdown.roleImplied?.unverified || [])
+    ...(requirementsBreakdown.roleImplied?.conflicting || []),
+    ...(requirementsBreakdown.roleImplied?.unknown || [])
   ];
 
   return (

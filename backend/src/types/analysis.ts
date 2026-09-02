@@ -1,5 +1,5 @@
 export type RequirementSource = 'explicit' | 'role-implied';
-export type RequirementStatus = 'matched' | 'missing' | 'unverified';
+export type RequirementStatus = 'matched' | 'missing' | 'unknown' | 'partial' | 'conflicting';
 
 export interface RequirementItem {
   requirement: string;
@@ -11,7 +11,9 @@ export interface RequirementItem {
 export interface RequirementsCategory {
   matched: RequirementItem[];
   missing: RequirementItem[];
-  unverified: RequirementItem[];
+  unknown: RequirementItem[];
+  partial: RequirementItem[];
+  conflicting: RequirementItem[];
   score: number; // 0-100 integer
 }
 

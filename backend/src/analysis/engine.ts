@@ -54,8 +54,19 @@ export async function analyzeResume(
 
   const calcCategoryScore = (items: RequirementItem[], defaultScore: number): number => {
     if (items.length === 0) return defaultScore;
-    const matchedCount = items.filter(i => i.status === 'matched').length;
-    return Math.round((matchedCount / items.length) * 100);
+    let earned = 0;
+    let total = items.length;
+    for (const item of items) {
+      if (item.status === 'matched') earned += 1;
+      else if (item.status === 'partial') earned += 0.5;
+      else if (item.status === 'unknown') {
+        // Unknown items shouldn't severely penalize, but shouldn't count as matched.
+        // Let's count them as 0.25 penalty instead of full 0.
+        earned += 0.75; 
+      }
+      // missing and conflicting get 0.
+    }
+    return Math.round((earned / total) * 100);
   };
 
   const defaultReqScore = semantics.roleCompatibilityScore < 30 ? 10 : 70;
@@ -84,13 +95,17 @@ export async function analyzeResume(
     explicit: {
       matched: explicitReqs.filter(r => r.status === 'matched'),
       missing: explicitReqs.filter(r => r.status === 'missing'),
-      unverified: explicitReqs.filter(r => r.status === 'unverified'),
+      unknown: explicitReqs.filter(r => r.status === 'unknown'),
+      partial: explicitReqs.filter(r => r.status === 'partial'),
+      conflicting: explicitReqs.filter(r => r.status === 'conflicting'),
       score: explicitScore
     },
     roleImplied: {
       matched: roleImpliedReqs.filter(r => r.status === 'matched'),
       missing: roleImpliedReqs.filter(r => r.status === 'missing'),
-      unverified: roleImpliedReqs.filter(r => r.status === 'unverified'),
+      unknown: roleImpliedReqs.filter(r => r.status === 'unknown'),
+      partial: roleImpliedReqs.filter(r => r.status === 'partial'),
+      conflicting: roleImpliedReqs.filter(r => r.status === 'conflicting'),
       score: roleImpliedScore
     },
     overallScore: overallRequirementsScore

@@ -19,11 +19,11 @@ export interface DeterministicScoringResult {
 
 export const ATS_WEIGHTS = {
   roleCompatibility: 0.25,
-  requiredQualifications: 0.25,
-  skillsMatch: 0.15,
-  experienceRelevance: 0.15,
+  requiredQualifications: 0.20,
+  skillsMatch: 0.20,
+  experienceRelevance: 0.20,
   keywordMatch: 0.10,
-  resumeQuality: 0.10
+  resumeQuality: 0.05
 } as const;
 
 export function clampScore(score: number | undefined | null): number {
@@ -35,7 +35,7 @@ export function clampScore(score: number | undefined | null): number {
  * Pure synchronous deterministic function to calculate final ATS score and breakdown.
  * Enforces hard-mismatch gate thresholds:
  * 1. Regulated role with missing critical credential => atsScore <= 18, criticalMismatch = true
- * 2. Role compatibility < 30 => atsScore <= 20, criticalMismatch = true
+ * 2. Role compatibility severely low (< 30) => atsScore <= 20, criticalMismatch = true
  * 3. Isolated Resume Quality cannot lift mismatched candidates over threshold.
  */
 export function calculateDeterministicAtsScore(input: DeterministicScoringInput): DeterministicScoringResult {
@@ -64,10 +64,15 @@ export function calculateDeterministicAtsScore(input: DeterministicScoringInput)
     finalAtsScore = Math.min(finalAtsScore, 18);
     criticalMismatch = true;
   }
-  // Gate 2: Unrelated role/domain mismatch
+  // Gate 2: Severe Unrelated role/domain mismatch
   else if (scoreBreakdown.roleCompatibility < 30) {
+    // A severe domain mismatch should crush the final score regardless of keyword overlap
     finalAtsScore = Math.min(finalAtsScore, 20);
     criticalMismatch = true;
+  }
+  // Additional Gate for Experience/Qualifications missing entirely
+  else if (scoreBreakdown.roleCompatibility < 50 && scoreBreakdown.requiredQualifications < 20) {
+    finalAtsScore = Math.min(finalAtsScore, 35);
   }
 
   return {
