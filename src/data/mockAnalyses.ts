@@ -42,7 +42,9 @@ export const mockAnalyses: AnalysisResult[] = [
         missing: [
           { requirement: 'Experience with AWS', source: 'explicit', status: 'missing', explanation: 'No AWS experience found in resume' }
         ],
-        unverified: [],
+        unknown: [],
+        partial: [],
+        conflicting: [],
         score: 67
       },
       roleImplied: {
@@ -50,7 +52,9 @@ export const mockAnalyses: AnalysisResult[] = [
           { requirement: 'Core Web Development Fundamentals', source: 'role-implied', status: 'matched', explanation: 'Demonstrated in work history' }
         ],
         missing: [],
-        unverified: [],
+        unknown: [],
+        partial: [],
+        conflicting: [],
         score: 100
       },
       overallScore: 80
