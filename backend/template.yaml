@@ -49,7 +49,7 @@ Resources:
         AllowOrigins:
           - http://localhost:5173
           - http://localhost:3000
-          - https://resumatch.vercel.app
+          - https://ai-resume-match-on-aws-zm2n.vercel.app
         AllowHeaders:
           - Content-Type
           - Authorization
