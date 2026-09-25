@@ -22,6 +22,10 @@
   <b>🌍 Bilingual Support: English & Amharic (አማርኛ)</b>
 </p>
 
+<p align="center">
+  <b>👨‍💻 Developed by Nardos Shumete</b>
+</p>
+
 </div>
 
 ---
